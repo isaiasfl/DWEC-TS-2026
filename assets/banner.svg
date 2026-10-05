@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="420" viewBox="0 0 1280 420" role="img" aria-labelledby="t d" xml:space="preserve">
+  <title id="t">DWEC · De TypeScript a React</title>
+  <desc id="d">Desarrollo Web en Entorno Cliente, 2.º DAW, curso 2026-27. Profesor Isaías Fernández Lozano.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="0.55" stop-color="#0f1e3a"/>
+      <stop offset="1" stop-color="#132a4f"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3178c6"/>
+      <stop offset="1" stop-color="#61dafb"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.35" r="0.45">
+      <stop offset="0" stop-color="#61dafb" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#61dafb" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#ffffff" stroke-opacity="0.04"/>
+    </pattern>
+    <style>
+      .sans { font-family: 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif; }
+      .mono { font-family: 'JetBrains Mono', 'Fira Code', 'SFMono-Regular', Consolas, monospace; }
+    </style>
+  </defs>
+
+  <rect width="1280" height="420" fill="url(#bg)"/>
+  <rect width="1280" height="420" fill="url(#grid)"/>
+  <rect width="1280" height="420" fill="url(#glow)"/>
+  <rect x="0" y="414" width="1280" height="6" fill="url(#accent)"/>
+
+  <!-- Texto principal -->
+  <g class="sans">
+    <text x="72" y="92" fill="#61dafb" font-size="20" font-weight="600" letter-spacing="4">2.º DAW · CURSO 2026–27</text>
+    <text x="72" y="168" fill="#ffffff" font-size="68" font-weight="800">DWEC</text>
+    <text x="72" y="236" font-size="52" font-weight="700"><tspan fill="#ffffff">De </tspan><tspan fill="#3178c6">TypeScript</tspan><tspan fill="#ffffff"> a </tspan><tspan fill="#61dafb">React</tspan></text>
+    <text x="72" y="280" fill="#c3cfe2" font-size="22">Desarrollo Web en Entorno Cliente · de cero a tu primera app</text>
+  </g>
+
+  <!-- Chips del stack -->
+  <g class="mono" font-size="16" font-weight="600">
+    <rect x="72" y="310" width="132" height="36" rx="18" fill="#3178c6"/>
+    <text x="138" y="334" fill="#fff" text-anchor="middle">TypeScript</text>
+    <rect x="216" y="310" width="78" height="36" rx="18" fill="#646cff"/>
+    <text x="255" y="334" fill="#fff" text-anchor="middle">Vite</text>
+    <rect x="306" y="310" width="72" height="36" rx="18" fill="#e34f26"/>
+    <text x="342" y="334" fill="#fff" text-anchor="middle">DOM</text>
+    <rect x="390" y="310" width="120" height="36" rx="18" fill="#0f766e"/>
+    <text x="450" y="334" fill="#fff" text-anchor="middle">fetch/APIs</text>
+    <rect x="522" y="310" width="90" height="36" rx="18" fill="#61dafb"/>
+    <text x="567" y="334" fill="#0b1220" text-anchor="middle">React</text>
+  </g>
+  <text class="sans" x="72" y="384" fill="#8fa3c0" font-size="18">Prof. Isaías Fernández Lozano · github.com/isaiasfl</text>
+
+  <!-- Ventana de código -->
+  <g transform="translate(760 70)">
+    <rect width="452" height="290" rx="14" fill="#0b1220" stroke="#2a3b5c"/>
+    <rect width="452" height="40" rx="14" fill="#16233d"/>
+    <rect y="26" width="452" height="14" fill="#16233d"/>
+    <circle cx="24" cy="20" r="6" fill="#ff5f57"/>
+    <circle cx="44" cy="20" r="6" fill="#febc2e"/>
+    <circle cx="64" cy="20" r="6" fill="#28c840"/>
+    <text class="mono" x="226" y="25" fill="#8fa3c0" font-size="13" text-anchor="middle">techstore/src/main.ts</text>
+    <g class="mono" font-size="15">
+      <text x="24" y="76"><tspan fill="#c678dd">interface</tspan><tspan fill="#e5c07b"> Product</tspan><tspan fill="#c3cfe2"> {</tspan></text>
+      <text x="44" y="100"><tspan fill="#e06c75">name</tspan><tspan fill="#c3cfe2">: </tspan><tspan fill="#61afef">string</tspan><tspan fill="#c3cfe2">;</tspan></text>
+      <text x="44" y="124"><tspan fill="#e06c75">price</tspan><tspan fill="#c3cfe2">: </tspan><tspan fill="#61afef">number</tspan><tspan fill="#c3cfe2">;</tspan></text>
+      <text x="24" y="148" fill="#c3cfe2">}</text>
+      <text x="24" y="184"><tspan fill="#c678dd">const</tspan><tspan fill="#c3cfe2"> available = products</tspan></text>
+      <text x="44" y="208"><tspan fill="#c3cfe2">.</tspan><tspan fill="#61afef">filter</tspan><tspan fill="#c3cfe2">((p) =&gt; p.stock &gt; </tspan><tspan fill="#d19a66">0</tspan><tspan fill="#c3cfe2">)</tspan></text>
+      <text x="44" y="232"><tspan fill="#c3cfe2">.</tspan><tspan fill="#61afef">toSorted</tspan><tspan fill="#c3cfe2">(byPrice);</tspan></text>
+      <text x="24" y="268" fill="#5c6f8f">// npx tsc --noEmit  →  0 errores</text>
+    </g>
+  </g>
+</svg>
