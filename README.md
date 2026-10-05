@@ -98,21 +98,25 @@ npm run dev
 npx tsc --noEmit
 ```
 
-Cada ejercicio vive en su propia carpeta y se importa desde `main.ts`:
+Estructura del proyecto: los tipos en `types/`, los datos en `data/` y cada ejercicio de casa en su propia carpeta, que se prueba desde `main.ts`:
 
 ```text
 src/
-├── main.ts
+├── main.ts                         ← aquí pruebas los ejercicios
+├── types/                          ← interface y type
+├── data/                           ← datos de ejemplo
 └── exercises/
-    └── s01/
-        └── ex01-available-products/
+    └── s01-homework/               ← sesión 01, ejercicios para casa
+        └── ex01-tags/              ← ejercicio 01 (siempre dos cifras) y nombre en inglés
             └── index.ts
 ```
+
+Cada hoja de ejercicios empieza con un apartado **Antes de empezar** con el árbol exacto de esa sesión.
 
 ## <img src="assets/iconos/clipboard-check.svg" width="24" height="24" alt=""> Cómo trabajas y entregas
 
 1. **Lee los apuntes** de la unidad antes de la sesión: llegarás con preguntas, no con dudas.
-2. **Resuelve los ejercicios** de cada sesión en tu proyecto, cada ejercicio en `src/exercises/sNN/exNN-name/index.ts`.
+2. **Resuelve los ejercicios** de cada sesión en tu proyecto, cada ejercicio en `src/exercises/sNN-homework/exNN-name/index.ts`, siguiendo el apartado **Antes de empezar** de su hoja.
 3. **Versiona tu trabajo con Git** y súbelo a tu propio repositorio de GitHub: es tu portfolio.
 4. **Comprueba** que `npx tsc --noEmit` termina **sin errores**.
 5. **Entrega en Moodle**: allí están las tareas, los plazos y la evaluación.
