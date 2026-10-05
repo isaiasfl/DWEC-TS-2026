@@ -72,16 +72,16 @@ flowchart LR
 
 ## <img src="assets/iconos/book-open.svg" width="24" height="24" alt=""> Unidades
 
-| | | Apuntes | Deberes |
+| | | Apuntes | Ejercicios |
 |---|---|---|---|
-| <img src="assets/iconos/code-xml.svg" width="22" height="22" alt=""> | **U1** | [TypeScript desde cero](apuntes/U1-typescript-desde-cero.md) | [S00](deberes/U1/sesion-00.md) |
-| <img src="assets/iconos/list.svg" width="22" height="22" alt=""> | **U2** | [Arrays funcionales](apuntes/U2-arrays-funcionales.md) | [S01](deberes/U2/sesion-01.md) · [S02](deberes/U2/sesion-02.md) |
-| <img src="assets/iconos/boxes.svg" width="22" height="22" alt=""> | **U3** | [Objetos, colecciones y funciones](apuntes/U3-objetos-colecciones-funciones.md) | [S03](deberes/U3/sesion-03.md) · [S04](deberes/U3/sesion-04.md) |
-| <img src="assets/iconos/layers.svg" width="22" height="22" alt=""> | **U4** | [Módulos, arquitectura y tipos avanzados](apuntes/U4-modulos-arquitectura-tipos-avanzados.md) | [S05](deberes/U4/sesion-05.md) · [S06](deberes/U4/sesion-06.md) |
-| <img src="assets/iconos/mouse-pointer-click.svg" width="22" height="22" alt=""> | **U5** | [DOM, eventos y estado](apuntes/U5-dom-eventos-estado.md) | [S07](deberes/U5/sesion-07.md) · [S08](deberes/U5/sesion-08.md) |
-| <img src="assets/iconos/clipboard-list.svg" width="22" height="22" alt=""> | **U6** | [Formularios y persistencia](apuntes/U6-formularios-persistencia.md) | [S09](deberes/U6/sesion-09.md) |
-| <img src="assets/iconos/cloud-download.svg" width="22" height="22" alt=""> | **U7** | [Asincronía y APIs](apuntes/U7-asincronia-apis.md) | [S10](deberes/U7/sesion-10.md) · [S11](deberes/U7/sesion-11.md) · [S12](deberes/U7/sesion-12.md) |
-| <img src="assets/iconos/atom.svg" width="22" height="22" alt=""> | **U8** | [Patrones y puente a React](apuntes/U8-patrones-y-puente-a-react.md) | [S13](deberes/U8/sesion-13.md) · [S14](deberes/U8/sesion-14.md) · [S15](deberes/U8/sesion-15.md) |
+| <img src="assets/iconos/code-xml.svg" width="22" height="22" alt=""> | **U1** | [TypeScript desde cero](apuntes/U1-typescript-desde-cero.md) | [S00](ejercicios/U1/sesion-00.md) |
+| <img src="assets/iconos/list.svg" width="22" height="22" alt=""> | **U2** | [Arrays funcionales](apuntes/U2-arrays-funcionales.md) | [S01](ejercicios/U2/sesion-01.md) · [S02](ejercicios/U2/sesion-02.md) |
+| <img src="assets/iconos/boxes.svg" width="22" height="22" alt=""> | **U3** | [Objetos, colecciones y funciones](apuntes/U3-objetos-colecciones-funciones.md) | [S03](ejercicios/U3/sesion-03.md) · [S04](ejercicios/U3/sesion-04.md) |
+| <img src="assets/iconos/layers.svg" width="22" height="22" alt=""> | **U4** | [Módulos, arquitectura y tipos avanzados](apuntes/U4-modulos-arquitectura-tipos-avanzados.md) | [S05](ejercicios/U4/sesion-05.md) · [S06](ejercicios/U4/sesion-06.md) |
+| <img src="assets/iconos/mouse-pointer-click.svg" width="22" height="22" alt=""> | **U5** | [DOM, eventos y estado](apuntes/U5-dom-eventos-estado.md) | [S07](ejercicios/U5/sesion-07.md) · [S08](ejercicios/U5/sesion-08.md) |
+| <img src="assets/iconos/clipboard-list.svg" width="22" height="22" alt=""> | **U6** | [Formularios y persistencia](apuntes/U6-formularios-persistencia.md) | [S09](ejercicios/U6/sesion-09.md) |
+| <img src="assets/iconos/cloud-download.svg" width="22" height="22" alt=""> | **U7** | [Asincronía y APIs](apuntes/U7-asincronia-apis.md) | [S10](ejercicios/U7/sesion-10.md) · [S11](ejercicios/U7/sesion-11.md) · [S12](ejercicios/U7/sesion-12.md) |
+| <img src="assets/iconos/atom.svg" width="22" height="22" alt=""> | **U8** | [Patrones y puente a React](apuntes/U8-patrones-y-puente-a-react.md) | [S13](ejercicios/U8/sesion-13.md) · [S14](ejercicios/U8/sesion-14.md) · [S15](ejercicios/U8/sesion-15.md) |
 
 ## <img src="assets/iconos/terminal.svg" width="24" height="24" alt=""> Empieza en dos minutos
 
@@ -112,7 +112,7 @@ src/
 ## <img src="assets/iconos/clipboard-check.svg" width="24" height="24" alt=""> Cómo trabajas y entregas
 
 1. **Lee los apuntes** de la unidad antes de la sesión: llegarás con preguntas, no con dudas.
-2. **Haz los deberes** de cada sesión en tu proyecto, cada ejercicio en `src/exercises/sNN/exNN-name/index.ts`.
+2. **Resuelve los ejercicios** de cada sesión en tu proyecto, cada ejercicio en `src/exercises/sNN/exNN-name/index.ts`.
 3. **Versiona tu trabajo con Git** y súbelo a tu propio repositorio de GitHub: es tu portfolio.
 4. **Comprueba** que `npx tsc --noEmit` termina **sin errores**.
 5. **Entrega en Moodle**: allí están las tareas, los plazos y la evaluación.
