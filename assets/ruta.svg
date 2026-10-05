@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="560" viewBox="0 0 1280 560" role="img" aria-labelledby="t d" xml:space="preserve">
+<title id="t">Ruta de aprendizaje DWEC: de TypeScript a React</title>
+<desc id="d">Ocho unidades en cuatro etapas (fundamentos, arquitectura, navegador y mundo real) que terminan en la primera app React.</desc>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b1220"/><stop offset="1" stop-color="#132a4f"/></linearGradient>
+<pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#fff" stroke-opacity="0.04"/></pattern>
+<radialGradient id="goal"><stop offset="0" stop-color="#61dafb" stop-opacity="0.45"/><stop offset="1" stop-color="#61dafb" stop-opacity="0"/></radialGradient>
+<style>.s{font-family:'Segoe UI','Inter','Helvetica Neue',Arial,sans-serif}.m{font-family:'JetBrains Mono','Fira Code',Consolas,monospace}</style></defs>
+<rect width="1280" height="560" rx="16" fill="url(#bg)"/><rect width="1280" height="560" rx="16" fill="url(#grid)"/>
+<text class="s" x="64" y="62" fill="#61dafb" font-size="16" font-weight="600" letter-spacing="4">RUTA DE APRENDIZAJE · 6 OCT – 6 NOV</text>
+<text class="s" x="64" y="104" font-size="34" font-weight="800"><tspan fill="#fff">8 unidades, 4 etapas, </tspan><tspan fill="#61dafb">1 meta</tspan></text>
+<line x1="90" y1="250" x2="362" y2="250" stroke="#3178c6" stroke-width="8" stroke-linecap="round"/>
+<text class="s" x="158.0" y="158" fill="#3178c6" font-size="15" font-weight="700" letter-spacing="3" text-anchor="middle">FUNDAMENTOS</text>
+<line x1="50" y1="172" x2="266" y2="172" stroke="#3178c6" stroke-opacity="0.5" stroke-width="2"/>
+<rect x="28.0" y="388" width="260" height="112" rx="12" fill="#0b1220" fill-opacity="0.75" stroke="#3178c6" stroke-opacity="0.7"/>
+<rect x="28.0" y="388" width="6" height="112" rx="3" fill="#3178c6"/>
+<text class="m" x="50.0" y="418" fill="#3178c6" font-size="13" font-weight="700">TechStore · al terminar</text>
+<text class="s" x="50.0" y="448" fill="#e2e8f0" font-size="13.8">Modela productos con tipos y</text>
+<text class="s" x="50.0" y="470" fill="#e2e8f0" font-size="13.8">filtra, ordena y resume el catálogo</text>
+<line x1="158.0" y1="356" x2="158.0" y2="386" stroke="#3178c6" stroke-opacity="0.5" stroke-dasharray="4 4"/>
+<line x1="362" y1="250" x2="634" y2="250" stroke="#8b5cf6" stroke-width="8" stroke-linecap="round"/>
+<text class="s" x="430.0" y="158" fill="#8b5cf6" font-size="15" font-weight="700" letter-spacing="3" text-anchor="middle">ARQUITECTURA</text>
+<line x1="322" y1="172" x2="538" y2="172" stroke="#8b5cf6" stroke-opacity="0.5" stroke-width="2"/>
+<rect x="300.0" y="388" width="260" height="112" rx="12" fill="#0b1220" fill-opacity="0.75" stroke="#8b5cf6" stroke-opacity="0.7"/>
+<rect x="300.0" y="388" width="6" height="112" rx="3" fill="#8b5cf6"/>
+<text class="m" x="322.0" y="418" fill="#8b5cf6" font-size="13" font-weight="700">TechStore · al terminar</text>
+<text class="s" x="322.0" y="448" fill="#e2e8f0" font-size="13.8">Se organiza en módulos y capas:</text>
+<text class="s" x="322.0" y="470" fill="#e2e8f0" font-size="13.8">dominio, servicios e interfaz</text>
+<line x1="430.0" y1="356" x2="430.0" y2="386" stroke="#8b5cf6" stroke-opacity="0.5" stroke-dasharray="4 4"/>
+<line x1="634" y1="250" x2="906" y2="250" stroke="#f97316" stroke-width="8" stroke-linecap="round"/>
+<text class="s" x="702.0" y="158" fill="#f97316" font-size="15" font-weight="700" letter-spacing="3" text-anchor="middle">NAVEGADOR</text>
+<line x1="594" y1="172" x2="810" y2="172" stroke="#f97316" stroke-opacity="0.5" stroke-width="2"/>
+<rect x="572.0" y="388" width="260" height="112" rx="12" fill="#0b1220" fill-opacity="0.75" stroke="#f97316" stroke-opacity="0.7"/>
+<rect x="572.0" y="388" width="6" height="112" rx="3" fill="#f97316"/>
+<text class="m" x="594.0" y="418" fill="#f97316" font-size="13" font-weight="700">TechStore · al terminar</text>
+<text class="s" x="594.0" y="448" fill="#e2e8f0" font-size="13.8">Se pinta, reacciona a eventos,</text>
+<text class="s" x="594.0" y="470" fill="#e2e8f0" font-size="13.8">valida formularios y guarda el carrito</text>
+<line x1="702.0" y1="356" x2="702.0" y2="386" stroke="#f97316" stroke-opacity="0.5" stroke-dasharray="4 4"/>
+<line x1="906" y1="250" x2="1148" y2="250" stroke="#14b8a6" stroke-width="8" stroke-linecap="round"/>
+<text class="s" x="974.0" y="158" fill="#14b8a6" font-size="15" font-weight="700" letter-spacing="3" text-anchor="middle">MUNDO REAL</text>
+<line x1="866" y1="172" x2="1082" y2="172" stroke="#14b8a6" stroke-opacity="0.5" stroke-width="2"/>
+<rect x="844.0" y="388" width="260" height="112" rx="12" fill="#0b1220" fill-opacity="0.75" stroke="#14b8a6" stroke-opacity="0.7"/>
+<rect x="844.0" y="388" width="6" height="112" rx="3" fill="#14b8a6"/>
+<text class="m" x="866.0" y="418" fill="#14b8a6" font-size="13" font-weight="700">TechStore · al terminar</text>
+<text class="s" x="866.0" y="448" fill="#e2e8f0" font-size="13.8">Carga el catálogo de una API real</text>
+<text class="s" x="866.0" y="470" fill="#e2e8f0" font-size="13.8">y se prepara para dar el salto</text>
+<line x1="974.0" y1="356" x2="974.0" y2="386" stroke="#14b8a6" stroke-opacity="0.5" stroke-dasharray="4 4"/>
+<circle cx="90" cy="250" r="30" fill="#0b1220" stroke="#3178c6" stroke-width="4"/>
+<g transform="translate(77.0 237.0) scale(1.0833333333333333)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="m18 16 4-4-4-4" />
+  <path d="m6 8-4 4 4 4" />
+  <path d="m14.5 4-5 16" />
+</g>
+<text class="m" x="90" y="206" fill="#3178c6" font-size="15" font-weight="700" text-anchor="middle">U1</text>
+<text class="s" x="90" y="306" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">TypeScript</text>
+<text class="s" x="90" y="324" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">desde cero</text>
+<text class="s" x="90" y="344" fill="#8fa3c0" font-size="12.5" text-anchor="middle">Puesta al día</text>
+<circle cx="226" cy="250" r="30" fill="#0b1220" stroke="#3178c6" stroke-width="4"/>
+<g transform="translate(213.0 237.0) scale(1.0833333333333333)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M3 5h.01" />
+  <path d="M3 12h.01" />
+  <path d="M3 19h.01" />
+  <path d="M8 5h13" />
+  <path d="M8 12h13" />
+  <path d="M8 19h13" />
+</g>
+<text class="m" x="226" y="206" fill="#3178c6" font-size="15" font-weight="700" text-anchor="middle">U2</text>
+<text class="s" x="226" y="306" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">Arrays</text>
+<text class="s" x="226" y="324" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">funcionales</text>
+<text class="s" x="226" y="344" fill="#8fa3c0" font-size="12.5" text-anchor="middle">6–7 oct</text>
+<circle cx="362" cy="250" r="30" fill="#0b1220" stroke="#8b5cf6" stroke-width="4"/>
+<g transform="translate(349.0 237.0) scale(1.0833333333333333)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z" />
+  <path d="m7 16.5-4.74-2.85" />
+  <path d="m7 16.5 5-3" />
+  <path d="M7 16.5v5.17" />
+  <path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z" />
+  <path d="m17 16.5-5-3" />
+  <path d="m17 16.5 4.74-2.85" />
+  <path d="M17 16.5v5.17" />
+  <path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z" />
+  <path d="M12 8 7.26 5.15" />
+  <path d="m12 8 4.74-2.85" />
+  <path d="M12 13.5V8" />
+</g>
+<text class="m" x="362" y="206" fill="#8b5cf6" font-size="15" font-weight="700" text-anchor="middle">U3</text>
+<text class="s" x="362" y="306" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">Objetos y</text>
+<text class="s" x="362" y="324" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">colecciones</text>
+<text class="s" x="362" y="344" fill="#8fa3c0" font-size="12.5" text-anchor="middle">9–13 oct</text>
+<circle cx="498" cy="250" r="30" fill="#0b1220" stroke="#8b5cf6" stroke-width="4"/>
+<g transform="translate(485.0 237.0) scale(1.0833333333333333)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" />
+  <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" />
+  <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" />
+</g>
+<text class="m" x="498" y="206" fill="#8b5cf6" font-size="15" font-weight="700" text-anchor="middle">U4</text>
+<text class="s" x="498" y="306" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">Módulos y</text>
+<text class="s" x="498" y="324" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">arquitectura</text>
+<text class="s" x="498" y="344" fill="#8fa3c0" font-size="12.5" text-anchor="middle">14–16 oct</text>
+<circle cx="634" cy="250" r="30" fill="#0b1220" stroke="#f97316" stroke-width="4"/>
+<g transform="translate(621.0 237.0) scale(1.0833333333333333)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M14 4.1 12 6" />
+  <path d="m5.1 8-2.9-.8" />
+  <path d="m6 12-1.9 2" />
+  <path d="M7.2 2.2 8 5.1" />
+  <path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z" />
+</g>
+<text class="m" x="634" y="206" fill="#f97316" font-size="15" font-weight="700" text-anchor="middle">U5</text>
+<text class="s" x="634" y="306" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">DOM, eventos</text>
+<text class="s" x="634" y="324" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">y estado</text>
+<text class="s" x="634" y="344" fill="#8fa3c0" font-size="12.5" text-anchor="middle">20–21 oct</text>
+<circle cx="770" cy="250" r="30" fill="#0b1220" stroke="#f97316" stroke-width="4"/>
+<g transform="translate(757.0 237.0) scale(1.0833333333333333)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+  <path d="M12 11h4" />
+  <path d="M12 16h4" />
+  <path d="M8 11h.01" />
+  <path d="M8 16h.01" />
+</g>
+<text class="m" x="770" y="206" fill="#f97316" font-size="15" font-weight="700" text-anchor="middle">U6</text>
+<text class="s" x="770" y="306" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">Formularios y</text>
+<text class="s" x="770" y="324" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">persistencia</text>
+<text class="s" x="770" y="344" fill="#8fa3c0" font-size="12.5" text-anchor="middle">23 oct</text>
+<circle cx="906" cy="250" r="30" fill="#0b1220" stroke="#14b8a6" stroke-width="4"/>
+<g transform="translate(893.0 237.0) scale(1.0833333333333333)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 13v8l-4-4" />
+  <path d="m12 21 4-4" />
+  <path d="M4.393 15.269A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.436 8.284" />
+</g>
+<text class="m" x="906" y="206" fill="#14b8a6" font-size="15" font-weight="700" text-anchor="middle">U7</text>
+<text class="s" x="906" y="306" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">Asincronía</text>
+<text class="s" x="906" y="324" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">y APIs</text>
+<text class="s" x="906" y="344" fill="#8fa3c0" font-size="12.5" text-anchor="middle">27–30 oct</text>
+<circle cx="1042" cy="250" r="30" fill="#0b1220" stroke="#14b8a6" stroke-width="4"/>
+<g transform="translate(1029.0 237.0) scale(1.0833333333333333)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="1" />
+  <path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z" />
+  <path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z" />
+</g>
+<text class="m" x="1042" y="206" fill="#14b8a6" font-size="15" font-weight="700" text-anchor="middle">U8</text>
+<text class="s" x="1042" y="306" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">Patrones y</text>
+<text class="s" x="1042" y="324" fill="#fff" font-size="14" font-weight="600" text-anchor="middle">puente a React</text>
+<text class="s" x="1042" y="344" fill="#8fa3c0" font-size="12.5" text-anchor="middle">3–6 nov</text>
+<circle cx="1198" cy="250" r="90" fill="url(#goal)"/>
+<circle cx="1198" cy="250" r="44" fill="#61dafb"/>
+<g transform="translate(1176.0 228.0) scale(1.8333333333333333)" fill="none" stroke="#0b1220" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="1" />
+  <path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z" />
+  <path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z" />
+</g>
+<text class="s" x="1198" y="322" fill="#61dafb" font-size="16" font-weight="800" text-anchor="middle">Tu primera</text>
+<text class="s" x="1198" y="342" fill="#61dafb" font-size="16" font-weight="800" text-anchor="middle">app React</text>
+<text class="s" x="640.0" y="534" fill="#8fa3c0" font-size="14" text-anchor="middle">Cada etapa deja TechStore un paso más cerca de una aplicación real · después, la ruta React</text>
+</svg>

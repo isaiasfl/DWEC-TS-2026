@@ -50,6 +50,12 @@ Durante todo el curso desarrollarás **TechStore**, una tienda de tecnología qu
 
 ## <img src="assets/iconos/calendar-days.svg" width="24" height="24" alt=""> Hoja de ruta
 
+<p align="center">
+  <img src="assets/ruta.svg" alt="Ruta de aprendizaje: 8 unidades en 4 etapas hasta tu primera app React" width="100%">
+</p>
+
+El mismo recorrido, unidad a unidad:
+
 ```mermaid
 flowchart LR
     U1[U1 · TypeScript<br/>desde cero] --> U2[U2 · Arrays<br/>funcionales]
