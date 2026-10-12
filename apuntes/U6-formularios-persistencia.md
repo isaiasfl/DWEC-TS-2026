@@ -54,16 +54,11 @@ if (isValid) {
 
 ## 2. El formulario y el evento `submit`
 
-**Ficha técnica · `HTMLFormElement`**
+**El problema:** quieres que el usuario pueda **dar de alta** productos en TechStore, en vez de escribirlos tú en el código.
 
-| Miembro | Qué hace |
-|---|---|
-| evento `submit` | se lanza al pulsar un botón `type="submit"` o Enter en un campo. Tipo: `SubmitEvent` |
-| `event.preventDefault()` | evita el envío y la recarga de la página |
-| `form.elements.namedItem(name)` | el control con ese `name`: <code>Element &#124; RadioNodeList &#124; null</code> |
-| `form.reset()` | vuelve los campos a sus valores iniciales |
-| `form.requestSubmit()` | envía como si se pulsara el botón (lanza `submit` y la validación HTML) |
-| `form.submit()` | envía **sin** lanzar el evento `submit` (evítalo) |
+**Qué es:** un **formulario** (`<form>`) agrupa los campos que rellena el usuario. Al pulsar *Enviar* (o Enter) lanza el evento **`submit`**, que tú escuchas para leer los datos.
+
+**Para qué sirve:** cualquier dato que escribe el usuario: altas, ediciones, búsquedas, inicio de sesión.
 
 ```html
 <form id="product-form" novalidate>
@@ -104,20 +99,26 @@ form.addEventListener('submit', (event) => {
 
 Escucha `submit` en el **formulario** (no `click` en el botón): así funciona también al pulsar **Enter**.
 
+### Ficha técnica (para consultar)
+
+**Ficha técnica · `HTMLFormElement`**
+
+| Miembro | Qué hace |
+|---|---|
+| evento `submit` | se lanza al pulsar un botón `type="submit"` o Enter en un campo. Tipo: `SubmitEvent` |
+| `event.preventDefault()` | evita el envío y la recarga de la página |
+| `form.elements.namedItem(name)` | el control con ese `name`: <code>Element &#124; RadioNodeList &#124; null</code> |
+| `form.reset()` | vuelve los campos a sus valores iniciales |
+| `form.requestSubmit()` | envía como si se pulsara el botón (lanza `submit` y la validación HTML) |
+| `form.submit()` | envía **sin** lanzar el evento `submit` (evítalo) |
+
 ---
 
 ## 3. Leer con `FormData`
 
-**Ficha técnica · `FormData`**
+**Qué es:** `FormData` es un objeto que el navegador rellena con **todos los campos del formulario** a la vez, usando su atributo `name` como clave.
 
-| Miembro | Firma | Devuelve | Ojo |
-|---|---|---|---|
-| constructor | `new FormData(form?)` | los campos con `name` y su valor actual | los campos `disabled` y los checkbox **desmarcados** no se incluyen |
-| `get` | `data.get(name)` | <code>FormDataEntryValue &#124; null</code> = <code>string &#124; File &#124; null</code> | `null` si no existe |
-| `getAll` | `data.getAll(name)` | `FormDataEntryValue[]` | para varios campos con el mismo `name` |
-| `has` | `data.has(name)` | `boolean` | |
-| `set` / `append` / `delete` | `data.set(name, value)` | `undefined` | `set` sustituye; `append` añade otro valor |
-| `entries` | `data.entries()` | iterador de `[name, value]` | `Object.fromEntries(data)` lo convierte en objeto |
+**Para qué sirve:** leer el formulario entero de una vez, sin seleccionar los campos uno a uno. Recuerda: **todo lo que sale de aquí es texto**.
 
 ```ts
 type ProductField = 'name' | 'price' | 'category' | 'stock';
@@ -152,6 +153,19 @@ const tags = f.getAll('etiqueta');        // varios campos con el mismo name
 const todo = Object.fromEntries(f);            // { nombre: ..., precio: ... } (valores string | File)
 console.log(favorite, tags, todo);
 ```
+
+### Ficha técnica (para consultar)
+
+**Ficha técnica · `FormData`**
+
+| Miembro | Firma | Devuelve | Ojo |
+|---|---|---|---|
+| constructor | `new FormData(form?)` | los campos con `name` y su valor actual | los campos `disabled` y los checkbox **desmarcados** no se incluyen |
+| `get` | `data.get(name)` | <code>FormDataEntryValue &#124; null</code> = <code>string &#124; File &#124; null</code> | `null` si no existe |
+| `getAll` | `data.getAll(name)` | `FormDataEntryValue[]` | para varios campos con el mismo `name` |
+| `has` | `data.has(name)` | `boolean` | |
+| `set` / `append` / `delete` | `data.set(name, value)` | `undefined` | `set` sustituye; `append` añade otro valor |
+| `entries` | `data.entries()` | iterador de `[name, value]` | `Object.fromEntries(data)` lo convierte en objeto |
 
 ---
 
@@ -286,24 +300,9 @@ form.addEventListener('submit', (event) => {
 
 ## 7. `localStorage`: guardar en el navegador
 
-**Ficha técnica · `localStorage` / `sessionStorage` (`Storage`)**
+**El problema:** añades un producto, recargas la página y **ha desaparecido**. Todo lo que está en variables se pierde al recargar.
 
-| Miembro | Firma | Devuelve | Ojo |
-|---|---|---|---|
-| `setItem` | `localStorage.setItem(key, value)` | `undefined` | solo guarda **texto**; puede lanzar `QuotaExceededError` (lleno, unos 5 MB por origen) |
-| `getItem` | `localStorage.getItem(key)` | <code>string &#124; null</code> | `null` si la clave no existe |
-| `removeItem` | `localStorage.removeItem(key)` | `undefined` | |
-| `clear` | `localStorage.clear()` | `undefined` | borra **todo** lo de ese origen |
-| `key` / `length` | `localStorage.key(i)` | nombre de la clave en la posición `i` | |
-
-Es **síncrono** y compartido por todas las pestañas del mismo origen (protocolo + dominio + puerto).
-
-**Ficha técnica · `JSON`**
-
-| Método | Firma | Devuelve | Ojo |
-|---|---|---|---|
-| `JSON.stringify` | `JSON.stringify(value, replacer?, space?)` | `string` (o `undefined` si `value` es `undefined` o una función) | omite propiedades `undefined` y funciones; `Map` y `Set` → `{}`; `Date` → texto ISO; `NaN`/`Infinity` → `null`. `space` (p. ej. `2`) indenta |
-| `JSON.parse` | `JSON.parse(text, reviver?)` | `any` → guárdalo como `unknown` | texto inválido → lanza `SyntaxError` |
+**Para qué sirve:** recordar **entre recargas** el carrito, las preferencias (tema oscuro, idioma) o un borrador a medio escribir. **No** sirve para secretos.
 
 `localStorage` guarda **texto** en el navegador, por dominio, y **sobrevive** a recargar y a cerrar.
 
@@ -326,6 +325,27 @@ console.log(theme);
 > **Puede fallar:** en algunos modos privados o con el almacenamiento lleno, `setItem` lanza un error. Envuélvelo en `try/catch` y que la aplicación siga funcionando sin guardar.
 > **No guardes secretos** (contraseñas, tokens): cualquier script de la página puede leerlo.
 > **¿Y las cookies?** Sirven para que el **servidor** reciba datos (sesiones, autenticación). Para guardar el estado de una aplicación en el navegador se usa `localStorage`. No las usaremos.
+
+### Ficha técnica (para consultar)
+
+**Ficha técnica · `localStorage` / `sessionStorage` (`Storage`)**
+
+| Miembro | Firma | Devuelve | Ojo |
+|---|---|---|---|
+| `setItem` | `localStorage.setItem(key, value)` | `undefined` | solo guarda **texto**; puede lanzar `QuotaExceededError` (lleno, unos 5 MB por origen) |
+| `getItem` | `localStorage.getItem(key)` | <code>string &#124; null</code> | `null` si la clave no existe |
+| `removeItem` | `localStorage.removeItem(key)` | `undefined` | |
+| `clear` | `localStorage.clear()` | `undefined` | borra **todo** lo de ese origen |
+| `key` / `length` | `localStorage.key(i)` | nombre de la clave en la posición `i` | |
+
+Es **síncrono** y compartido por todas las pestañas del mismo origen (protocolo + dominio + puerto).
+
+**Ficha técnica · `JSON`**
+
+| Método | Firma | Devuelve | Ojo |
+|---|---|---|---|
+| `JSON.stringify` | `JSON.stringify(value, replacer?, space?)` | `string` (o `undefined` si `value` es `undefined` o una función) | omite propiedades `undefined` y funciones; `Map` y `Set` → `{}`; `Date` → texto ISO; `NaN`/`Infinity` → `null`. `space` (p. ej. `2`) indenta |
+| `JSON.parse` | `JSON.parse(text, reviver?)` | `any` → guárdalo como `unknown` | texto inválido → lanza `SyntaxError` |
 
 ---
 

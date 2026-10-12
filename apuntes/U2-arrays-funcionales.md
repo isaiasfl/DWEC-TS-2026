@@ -98,17 +98,9 @@ console.log(doubles); // undefined
 
 ## 3. `map`: transformar
 
-**Ficha técnica · `map`**
+**El problema:** tienes la lista de productos y quieres **la misma lista, transformada**: solo los nombres, o los precios con IVA.
 
-| | |
-|---|---|
-| **Firma** | `list.map(callback, thisArg?)` |
-| **Callback** | `(element: T, index: number, array: T[]) => U` |
-| **Devuelve** | `U[]`: un array **nuevo** con lo que devolvió el callback para cada elemento |
-| **Longitud del resultado** | **igual** a la del original |
-| **¿Muta el array?** | No |
-| **Array vacío** | devuelve `[]` sin llamar al callback |
-| **Desde** | ES5 (2009) |
+**Para qué sirve:** sacar un dato de cada elemento, calcular algo para cada uno y, en React, convertir cada dato en un elemento de la pantalla.
 
 **Uno entra, uno sale.** `map` aplica una función a cada elemento y construye un array **nuevo de la misma longitud** con los resultados.
 
@@ -150,21 +142,27 @@ console.log(good1, good2, fichas);
 
 > **Si abres llave, escribe `return`.**
 
+### Ficha técnica (para consultar)
+
+**Ficha técnica · `map`**
+
+| | |
+|---|---|
+| **Firma** | `list.map(callback, thisArg?)` |
+| **Callback** | `(element: T, index: number, array: T[]) => U` |
+| **Devuelve** | `U[]`: un array **nuevo** con lo que devolvió el callback para cada elemento |
+| **Longitud del resultado** | **igual** a la del original |
+| **¿Muta el array?** | No |
+| **Array vacío** | devuelve `[]` sin llamar al callback |
+| **Desde** | ES5 (2009) |
+
 ---
 
 ## 4. `filter`: seleccionar
 
-**Ficha técnica · `filter`**
+**El problema:** quieres **solo algunos** productos: los que tienen stock, o los de menos de 60 €.
 
-| | |
-|---|---|
-| **Firma** | `list.filter(predicate, thisArg?)` |
-| **Predicado** | `(element: T, index: number, array: T[]) => unknown`: se evalúa como *truthy* o *falsy* |
-| **Devuelve** | `T[]`: array **nuevo** con los elementos cuyo predicado fue *truthy* (los **mismos** objetos, no copias) |
-| **Longitud del resultado** | de `0` a la del original |
-| **¿Muta el array?** | No |
-| **Con un type guard** | si el predicado es `(x): x is S => ...`, devuelve `S[]` |
-| **Desde** | ES5 (2009) |
+**Para qué sirve:** buscadores, filtros por categoría y borrar elementos **sin mutar** (te quedas con todos menos uno).
 
 `filter` hace a cada elemento una pregunta de **sí o no**. Los que responden *sí* pasan al array nuevo.
 
@@ -196,23 +194,31 @@ const discounted = products.map(discountedPrice).filter((x) => x !== null);
 console.log(discounted);
 ```
 
+### Ficha técnica (para consultar)
+
+**Ficha técnica · `filter`**
+
+| | |
+|---|---|
+| **Firma** | `list.filter(predicate, thisArg?)` |
+| **Predicado** | `(element: T, index: number, array: T[]) => unknown`: se evalúa como *truthy* o *falsy* |
+| **Devuelve** | `T[]`: array **nuevo** con los elementos cuyo predicado fue *truthy* (los **mismos** objetos, no copias) |
+| **Longitud del resultado** | de `0` a la del original |
+| **¿Muta el array?** | No |
+| **Con un type guard** | si el predicado es `(x): x is S => ...`, devuelve `S[]` |
+| **Desde** | ES5 (2009) |
+
 ---
 
 ## 5. Buscar: `find`, `findIndex`, `findLast`, `at`
 
 ### `find`: el primero que cumpla... o nada
 
-**Ficha técnica · `find`**
+**El problema:** tienes un `id` (por ejemplo, el del producto que el usuario ha pulsado) y necesitas **el producto**.
 
-| | |
-|---|---|
-| **Firma** | `list.find(predicate, thisArg?)` |
-| **Predicado** | `(element: T, index: number, array: T[]) => unknown` |
-| **Devuelve** | el **primer** elemento cuyo predicado es *truthy*, o `undefined` si ninguno lo cumple. Tipo: <code>T &#124; undefined</code> |
-| **¿Se detiene?** | Sí, en cuanto encuentra el primero (no recorre el resto) |
-| **¿Muta el array?** | No |
-| **Array vacío** | `undefined` |
-| **Desde** | ES2015 |
+**Qué es:** `find` recorre el array y devuelve **el primer elemento** que cumple la condición. Si ninguno la cumple, devuelve `undefined`.
+
+**Para qué sirve:** buscar por `id`, el usuario por su correo, el primer producto agotado.
 
 ```ts
 const monitor = products.find((p) => p.id === 3);
@@ -245,7 +251,31 @@ Producto | undefined ──¿=== undefined?──┬── sí ──▶ return 
 
 ![Diagrama: tras comprobar undefined, TypeScript estrecha el tipo a Product](img/narrowing.svg)
 
+**Ficha técnica · `find`**
+
+| | |
+|---|---|
+| **Firma** | `list.find(predicate, thisArg?)` |
+| **Predicado** | `(element: T, index: number, array: T[]) => unknown` |
+| **Devuelve** | el **primer** elemento cuyo predicado es *truthy*, o `undefined` si ninguno lo cumple. Tipo: <code>T &#124; undefined</code> |
+| **¿Se detiene?** | Sí, en cuanto encuentra el primero (no recorre el resto) |
+| **¿Muta el array?** | No |
+| **Array vacío** | `undefined` |
+| **Desde** | ES2015 |
+
 ### `findIndex`: la posición... o `-1`
+
+**Qué es y para qué:** como `find`, pero devuelve **la posición** del elemento (o `-1` si no está). Sirve cuando necesitas saber **dónde** está, por ejemplo para sustituirlo con `with`.
+
+```ts
+const position = products.findIndex((p) => p.id === 99);
+if (position === -1) {
+  console.log('No está');
+}
+```
+
+> [!WARNING]
+> **Atención:** `if (position)` es una trampa: la posición `0` es *falsy* y el `-1` es *truthy*. Compara siempre con `=== -1`.
 
 **Ficha técnica · `findIndex`**
 
@@ -258,17 +288,18 @@ Producto | undefined ──¿=== undefined?──┬── sí ──▶ return 
 | **¿Muta el array?** | No |
 | **Desde** | ES2015 |
 
+### `findLast`, `findLastIndex` y `at`
+
+**Para qué:** buscar empezando **por el final** (el último pedido, el último agotado) y leer posiciones contando desde atrás (`at(-1)` es el último).
+
 ```ts
-const position = products.findIndex((p) => p.id === 99);
-if (position === -1) {
-  console.log('No está');
-}
+const lastSoldOut = products.findLast((p) => p.stock === 0);  // Monitor 24"
+const last = products.at(-1);        // el último elemento: Product | undefined
+const secondToLast = products.at(-2);
+console.log(lastSoldOut?.name, last?.name, secondToLast?.name);
 ```
 
-> [!WARNING]
-> **Atención:** `if (position)` es una trampa: la posición `0` es *falsy* y el `-1` es *truthy*. Compara siempre con `=== -1`.
-
-### `findLast`, `findLastIndex` y `at`
+`at(-1)` sustituye al antiguo `list[list.length - 1]`, y además su tipo **sí** incluye `undefined`: es más honesto que el acceso por índice.
 
 **Ficha técnica · `findLast` / `findLastIndex` / `at`**
 
@@ -280,18 +311,28 @@ if (position === -1) {
 
 Ninguno muta el array.
 
-```ts
-const lastSoldOut = products.findLast((p) => p.stock === 0);  // Monitor 24"
-const last = products.at(-1);        // el último elemento: Product | undefined
-const secondToLast = products.at(-2);
-console.log(lastSoldOut?.name, last?.name, secondToLast?.name);
-```
-
-`at(-1)` sustituye al antiguo `list[list.length - 1]`, y además su tipo **sí** incluye `undefined`: es más honesto que el acceso por índice.
-
 ---
 
 ## 6. Comprobar: `some`, `every`, `includes`
+
+**El problema:** a veces no quieres elementos, sino **una respuesta de sí o no** sobre toda la lista: ¿hay algún producto agotado? ¿Todos tienen precio?
+
+**Qué es:** `some` pregunta **«¿al menos uno?»**, `every` pregunta **«¿todos?»** e `includes` pregunta **«¿está este valor?»**. Los tres devuelven un `boolean`.
+
+**Para qué sirve:** mostrar un aviso, validar datos antes de guardarlos o desactivar un botón.
+
+```ts
+const hasSoldOut = products.some((p) => p.stock === 0);     // ¿al menos uno?  true
+const allValid = products.every((p) => p.price > 0);    // ¿todos?         true
+const hasAudio = products.map((p) => p.category).includes('audio'); // ¿está este valor? true
+console.log(hasSoldOut, allValid, hasAudio);
+```
+
+> **La «verdad vacía»:** en un array vacío, `some` da `false` y **`every` da `true`** (nadie incumple la regla). Una tienda sin productos «tiene todos sus productos con stock». Ten en cuenta el vacío.
+
+`includes` compara **valores**, no condiciones: para buscar un objeto por `id` usa `some((p) => p.id === 3)`.
+
+### Ficha técnica (para consultar)
 
 **Ficha técnica · `some` / `every` / `includes` / `indexOf`**
 
@@ -307,36 +348,15 @@ console.log(lastSoldOut?.name, last?.name, secondToLast?.name);
 - **Comparación:** `includes` usa la igualdad *SameValueZero* (encuentra `NaN`); `indexOf` usa `===` (**no** encuentra `NaN`). Los objetos se comparan **por referencia**: `[{ id: 1 }].includes({ id: 1 })` es `false`.
 - Ninguno muta el array. `some`/`every`: ES5; `includes`: ES2016.
 
-```ts
-const hasSoldOut = products.some((p) => p.stock === 0);     // ¿al menos uno?  true
-const allValid = products.every((p) => p.price > 0);    // ¿todos?         true
-const hasAudio = products.map((p) => p.category).includes('audio'); // ¿está este valor? true
-console.log(hasSoldOut, allValid, hasAudio);
-```
-
-> **La «verdad vacía»:** en un array vacío, `some` da `false` y **`every` da `true`** (nadie incumple la regla). Una tienda sin productos «tiene todos sus productos con stock». Ten en cuenta el vacío.
-
-`includes` compara **valores**, no condiciones: para buscar un objeto por `id` usa `some((p) => p.id === 3)`.
-
 ---
 
 ## 7. `reduce`: resumir en un valor
 
+**El problema:** quieres **un solo resultado** a partir de toda la lista: el valor del inventario, el total del carrito, cuántas unidades hay de cada categoría.
+
+**Para qué sirve:** totales, medias, máximos y contadores. Es el método más potente de la unidad, y también el más difícil: tómate tu tiempo.
+
 ![Diagrama: el acumulador de reduce paso a paso](img/reduce-hucha.svg)
-
-**Ficha técnica · `reduce`**
-
-| | |
-|---|---|
-| **Firma** | `list.reduce(callback, initialValue?)` |
-| **Callback** | `(accumulator: A, element: T, index: number, array: T[]) => A` (**cuatro** parámetros) |
-| **Devuelve** | el valor final del acumulador (tipo `A`, el del valor inicial) |
-| **Con `initialValue`** | la primera vuelta recibe `accumulator = initialValue` y empieza en el índice 0 |
-| **Sin `initialValue`** | usa el **primer elemento** como acumulador y empieza en el índice 1 |
-| **Array vacío sin `initialValue`** | lanza `TypeError: Reduce of empty array with no initial value` |
-| **¿Muta el array?** | No |
-| **Variante** | `reduceRight`: igual, pero recorre de derecha a izquierda |
-| **Desde** | ES5 (2009) |
 
 `reduce` convierte un array en **un solo valor**: un total, un máximo, un objeto con contadores... Funciona como una **hucha**: empieza con un valor inicial y en cada vuelta echas algo.
 
@@ -385,24 +405,31 @@ console.log(averagePrice(products), averagePrice([]));
 > [!TIP]
 > **Consejo:** Si un `reduce` se vuelve ilegible, un `for...of` sobre una variable **local** es perfectamente correcto. La legibilidad manda.
 
+### Ficha técnica (para consultar)
+
+**Ficha técnica · `reduce`**
+
+| | |
+|---|---|
+| **Firma** | `list.reduce(callback, initialValue?)` |
+| **Callback** | `(accumulator: A, element: T, index: number, array: T[]) => A` (**cuatro** parámetros) |
+| **Devuelve** | el valor final del acumulador (tipo `A`, el del valor inicial) |
+| **Con `initialValue`** | la primera vuelta recibe `accumulator = initialValue` y empieza en el índice 0 |
+| **Sin `initialValue`** | usa el **primer elemento** como acumulador y empieza en el índice 1 |
+| **Array vacío sin `initialValue`** | lanza `TypeError: Reduce of empty array with no initial value` |
+| **¿Muta el array?** | No |
+| **Variante** | `reduceRight`: igual, pero recorre de derecha a izquierda |
+| **Desde** | ES5 (2009) |
+
 ---
 
 ## 8. Ordenar sin romper: `toSorted` y compañía
 
-**Ficha técnica · ordenar y modificar posiciones**
+**El problema:** quieres mostrar los productos **del más barato al más caro**, pero sin estropear la lista original, que se sigue usando en otras partes.
 
-| Método | Firma | Devuelve | ¿Muta? | Desde |
-|---|---|---|---|---|
-| `sort` | `list.sort(comparator?)` | **el mismo** array, ordenado | **Sí** | ES1 |
-| `toSorted` | `list.toSorted(comparator?)` | un array **nuevo** ordenado | No | ES2023 |
-| `reverse` | `list.reverse()` | **el mismo** array, invertido | **Sí** | ES1 |
-| `toReversed` | `list.toReversed()` | un array **nuevo** invertido | No | ES2023 |
-| `splice` | `list.splice(start, howMany?, ...newItems)` | un array con los elementos **eliminados** | **Sí** | ES3 |
-| `toSpliced` | `list.toSpliced(start, howMany?, ...newItems)` | un array **nuevo** con los cambios | No | ES2023 |
-| `with` | `list.with(index, value)` | un array **nuevo** con esa posición cambiada; `RangeError` si el índice no existe | No | ES2023 |
+**Qué es:** ordenar con una **función comparadora** que decide quién va antes. `toSorted` devuelve una **copia** ordenada; el antiguo `sort` **modifica** el original.
 
-- **Comparador:** `(a: T, b: T) => number`. Negativo: `a` antes; positivo: `a` después; `0`: mantienen su orden (la ordenación es **estable** desde ES2019).
-- **Sin comparador** convierte los elementos a **texto** y los ordena por su código Unicode: `[10, 9, 1]` queda `[1, 10, 9]`.
+**Para qué sirve:** ordenar tablas por columna, rankings y listados por nombre.
 
 ```ts
 const numbers = [80, 25, 220];
@@ -471,6 +498,23 @@ console.log(byCategoryAndPrice.map((p) => `${p.category} · ${p.name}`));
 
 Si la categoría empata (`0`), `||` pasa al segundo criterio. Es de los pocos casos donde `||` es la herramienta correcta.
 
+### Ficha técnica (para consultar)
+
+**Ficha técnica · ordenar y modificar posiciones**
+
+| Método | Firma | Devuelve | ¿Muta? | Desde |
+|---|---|---|---|---|
+| `sort` | `list.sort(comparator?)` | **el mismo** array, ordenado | **Sí** | ES1 |
+| `toSorted` | `list.toSorted(comparator?)` | un array **nuevo** ordenado | No | ES2023 |
+| `reverse` | `list.reverse()` | **el mismo** array, invertido | **Sí** | ES1 |
+| `toReversed` | `list.toReversed()` | un array **nuevo** invertido | No | ES2023 |
+| `splice` | `list.splice(start, howMany?, ...newItems)` | un array con los elementos **eliminados** | **Sí** | ES3 |
+| `toSpliced` | `list.toSpliced(start, howMany?, ...newItems)` | un array **nuevo** con los cambios | No | ES2023 |
+| `with` | `list.with(index, value)` | un array **nuevo** con esa posición cambiada; `RangeError` si el índice no existe | No | ES2023 |
+
+- **Comparador:** `(a: T, b: T) => number`. Negativo: `a` antes; positivo: `a` después; `0`: mantienen su orden (la ordenación es **estable** desde ES2019).
+- **Sin comparador** convierte los elementos a **texto** y los ordena por su código Unicode: `[10, 9, 1]` queda `[1, 10, 9]`.
+
 ---
 
 ## 9. Encadenar métodos
@@ -497,12 +541,7 @@ console.log(top3);
 
 ### `flat` y `flatMap`
 
-**Ficha técnica · `flat` / `flatMap`**
-
-| Método | Firma | Devuelve | Desde |
-|---|---|---|---|
-| `flat` | `list.flat(profundidad = 1)` | array **nuevo** con los subarrays aplanados hasta esa profundidad (`Infinity` = todos) | ES2019 |
-| `flatMap` | `list.flatMap(callback, thisArg?)` | como `map` seguido de `flat(1)`: el callback `(element, index, array)` devuelve un valor o un array | ES2019 |
+**Para qué:** aplanar listas de listas (los productos de varios pedidos en una sola lista) y transformar cuando cada elemento puede dar **cero, uno o varios** resultados.
 
 ```ts
 const byBox = [[1, 2], [3], [4, 5]];
@@ -514,7 +553,22 @@ console.log(tags);
 
 `flatMap` = `map` + `flat`: cada elemento puede producir **cero, uno o varios** resultados.
 
+**Ficha técnica · `flat` / `flatMap`**
+
+| Método | Firma | Devuelve | Desde |
+|---|---|---|---|
+| `flat` | `list.flat(profundidad = 1)` | array **nuevo** con los subarrays aplanados hasta esa profundidad (`Infinity` = todos) | ES2019 |
+| `flatMap` | `list.flatMap(callback, thisArg?)` | como `map` seguido de `flat(1)`: el callback `(element, index, array)` devuelve un valor o un array | ES2019 |
+
 ### `Array.from` y `Array.of`
+
+**Para qué:** **crear** arrays a partir de otra cosa: una secuencia de números, las letras de un texto o la lista que devuelve el DOM (`NodeList`), que no es un array.
+
+```ts
+const five = Array.from({ length: 5 }, (_, i) => i + 1);   // [1, 2, 3, 4, 5]
+const letters = Array.from('Isaías');                       // ['I','s','a','í','a','s']
+console.log(five, letters);
+```
 
 **Ficha técnica · `Array.from` / `Array.of` / `Array.isArray`**
 
@@ -524,24 +578,9 @@ console.log(tags);
 | `Array.of` | `Array.of(...items)` | array con esos elementos (`Array.of(3)` es `[3]`, mientras que `new Array(3)` crea 3 huecos vacíos) |
 | `Array.isArray` | `Array.isArray(value)` | `true` si es un array (sirve de *narrowing* con `unknown`) |
 
-```ts
-const five = Array.from({ length: 5 }, (_, i) => i + 1);   // [1, 2, 3, 4, 5]
-const letters = Array.from('Isaías');                       // ['I','s','a','í','a','s']
-console.log(five, letters);
-```
-
 ### `Object.groupBy` (ES2024)
 
-**Ficha técnica · `Object.groupBy` / `Map.groupBy`**
-
-| | |
-|---|---|
-| **Firma** | `Object.groupBy(items, key)` · `Map.groupBy(items, key)` |
-| **`items`** | cualquier **iterable** (array, `Set`...) |
-| **`key`** | `(element: T, index: number) => K`: la clave de grupo de cada elemento |
-| **Devuelve** | `Object.groupBy`: un objeto *sin prototipo* `{ key: T[] }`, de tipo `Partial<Record<K, T[]>>` (cada grupo puede faltar). `Map.groupBy`: un `Map<K, T[]>` (la clave puede ser de cualquier tipo) |
-| **¿Muta?** | No |
-| **Desde** | ES2024 (requiere `lib: ES2025` en el `tsconfig`) |
+**Para qué:** repartir una lista en grupos según una clave (productos por categoría, pedidos por día) en una sola línea.
 
 Agrupa los elementos según una clave, en una línea:
 
@@ -554,19 +593,20 @@ console.log(byCategory.audio?.map((p) => p.name));
 > [!NOTE]
 > **Nota:** Requiere `"lib": ["ES2025", "DOM", "DOM.Iterable"]` en el `tsconfig.json` (ver unidad 1). Cada grupo puede ser `undefined` (si no hay elementos de esa clave), por eso el `?.`.
 
+**Ficha técnica · `Object.groupBy` / `Map.groupBy`**
+
+| | |
+|---|---|
+| **Firma** | `Object.groupBy(items, key)` · `Map.groupBy(items, key)` |
+| **`items`** | cualquier **iterable** (array, `Set`...) |
+| **`key`** | `(element: T, index: number) => K`: la clave de grupo de cada elemento |
+| **Devuelve** | `Object.groupBy`: un objeto *sin prototipo* `{ key: T[] }`, de tipo `Partial<Record<K, T[]>>` (cada grupo puede faltar). `Map.groupBy`: un `Map<K, T[]>` (la clave puede ser de cualquier tipo) |
+| **¿Muta?** | No |
+| **Desde** | ES2024 (requiere `lib: ES2025` en el `tsconfig`) |
+
 ### Iteradores con métodos (ES2025)
 
-**Ficha técnica · métodos de iterador (ES2025)**
-
-| Método | Qué hace |
-|---|---|
-| `iter.map(fn)` / `iter.filter(fn)` | como los de array, pero **perezosos**: no calculan nada hasta que se pide |
-| `iter.take(n)` / `iter.drop(n)` | se queda con los `n` primeros / se salta los `n` primeros |
-| `iter.flatMap(fn)` | como el de array |
-| `iter.toArray()` | consume el iterador y devuelve un array |
-| `iter.some` / `every` / `find` / `reduce` / `forEach` | como los de array; consumen el iterador |
-
-Se obtiene un iterador con `list.values()`, `list.keys()`, `list.entries()`, o de un `Map`/`Set`. El callback recibe `(value, counter)`. Un iterador **solo se puede recorrer una vez**.
+**Para qué:** encadenar `filter`, `map` y `take` **sin crear arrays intermedios**, procesando solo los elementos que hacen falta. Útil con listas muy grandes.
 
 Los iteradores (`values()`, `keys()`, `entries()`...) ahora tienen `map`, `filter`, `take`... que trabajan **bajo demanda**, sin crear arrays intermedios:
 
@@ -581,6 +621,18 @@ console.log(firstNames); // ['Teclado mecánico', 'Monitor 27"']
 ```
 
 Útil con colecciones grandes: se detiene en cuanto tiene los dos que pide `take`.
+
+**Ficha técnica · métodos de iterador (ES2025)**
+
+| Método | Qué hace |
+|---|---|
+| `iter.map(fn)` / `iter.filter(fn)` | como los de array, pero **perezosos**: no calculan nada hasta que se pide |
+| `iter.take(n)` / `iter.drop(n)` | se queda con los `n` primeros / se salta los `n` primeros |
+| `iter.flatMap(fn)` | como el de array |
+| `iter.toArray()` | consume el iterador y devuelve un array |
+| `iter.some` / `every` / `find` / `reduce` / `forEach` | como los de array; consumen el iterador |
+
+Se obtiene un iterador con `list.values()`, `list.keys()`, `list.entries()`, o de un `Map`/`Set`. El callback recibe `(value, counter)`. Un iterador **solo se puede recorrer una vez**.
 
 ---
 

@@ -473,7 +473,7 @@ show('Bienvenidos a DWEC');
 ### Devolver «puede que no haya resultado»: `number | null`
 
 ```ts
-function media(grades: number[]): number | null {
+function average(grades: number[]): number | null {   // average (media)
   if (grades.length === 0) {
     return null;          // sin notas no hay media (dividir entre 0 daría NaN)
   }
@@ -484,7 +484,7 @@ function media(grades: number[]): number | null {
   return sum / grades.length;
 }
 
-const m = media([]);
+const m = average([]);
 console.log(m === null ? 'sin notas' : m.toFixed(2));
 ```
 
@@ -639,5 +639,5 @@ Cómo leerlo, paso a paso:
 - [ ] ¿Por qué hay que anotar `const list: string[] = []`?
 - [ ] ¿Qué diferencia hay entre `quantity || 10` y `quantity ?? 10` si `quantity` vale `0`?
 - [ ] Escribe una `interface Book` con `title`, `author`, `pages` e `isbn` opcional.
-- [ ] ¿Por qué `media([])` devuelve `null` y no `0`?
+- [ ] ¿Por qué `average([])` devuelve `null` y no `0`?
 - [ ] ¿Qué recorre `for...in` en un array?

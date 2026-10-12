@@ -129,15 +129,7 @@ productos ──▶ [ ●, ●, ● ]      copiaLista ──▶ [ ●, ●, ● 
 
 ### Copia profunda: `structuredClone`
 
-**Ficha técnica · copiar y proteger objetos**
-
-| Herramienta | Firma | Qué hace | Ojo |
-|---|---|---|---|
-| spread de objeto | `{ ...obj }` | copia **superficial** de las propiedades propias | los objetos internos se comparten |
-| spread de array | `[...list]` | copia **superficial** | ídem |
-| `structuredClone` | `structuredClone(value)` | copia **profunda** (todos los niveles). Copia también `Date`, `Map`, `Set`, arrays anidados | lanza `DataCloneError` si encuentra **funciones** (o elementos del DOM). Desde 2022 |
-| `Object.assign` | `Object.assign(target, ...origenes)` | copia propiedades **sobre** `target` y lo devuelve | **muta** `target`; preferir spread |
-| `Object.freeze` | `Object.freeze(obj)` | impide cambiar sus propiedades en ejecución | **superficial**: `freeze({ a: { b: 1 } }).a.b = 2` sí funciona |
+**Para qué:** cuando necesitas una copia **totalmente independiente** de un objeto con objetos dentro (por ejemplo, para editar un pedido sin tocar el original hasta que se guarde).
 
 ```ts
 const order = { customer: 'Isaías', lines: [{ productId: 1, quantity: 2 }] };
@@ -152,6 +144,16 @@ console.log(order.lines[0].quantity); // 2: el original no cambia
 > **Regla de oro de la inmutabilidad:** *no modifiques nada que no hayas creado tú en esa misma función. Para cambiar algo, crea una copia del nivel que cambia.*
 
 ![Diagrama: asignar copia la referencia; spread crea un array nuevo que comparte los objetos](img/referencias.svg)
+
+**Ficha técnica · copiar y proteger objetos**
+
+| Herramienta | Firma | Qué hace | Ojo |
+|---|---|---|---|
+| spread de objeto | `{ ...obj }` | copia **superficial** de las propiedades propias | los objetos internos se comparten |
+| spread de array | `[...list]` | copia **superficial** | ídem |
+| `structuredClone` | `structuredClone(value)` | copia **profunda** (todos los niveles). Copia también `Date`, `Map`, `Set`, arrays anidados | lanza `DataCloneError` si encuentra **funciones** (o elementos del DOM). Desde 2022 |
+| `Object.assign` | `Object.assign(target, ...origenes)` | copia propiedades **sobre** `target` y lo devuelve | **muta** `target`; preferir spread |
+| `Object.freeze` | `Object.freeze(obj)` | impide cambiar sus propiedades en ejecución | **superficial**: `freeze({ a: { b: 1 } }).a.b = 2` sí funciona |
 
 ---
 
@@ -233,16 +235,11 @@ console.log(update(products, 1, { stock: 0 })[0].stock, view);
 
 ## 6. Recorrer y transformar objetos
 
-**Ficha técnica · métodos de `Object`**
+**El problema:** tienes un objeto como `{ dwec: 8, dwes: 7, diw: 9 }` y quieres recorrerlo o transformar todos sus valores. Pero los objetos **no tienen** `map` ni `filter`.
 
-| Método | Firma | Devuelve | Ojo |
-|---|---|---|---|
-| `Object.keys` | `Object.keys(obj)` | `string[]` con las claves **propias y enumerables** | no incluye claves `Symbol`; en TS el tipo es `string[]`, no `(keyof T)[]` |
-| `Object.values` | `Object.values(obj)` | array con los valores | |
-| `Object.entries` | `Object.entries(obj)` | array de parejas `[key, value]` | ideal con `for (const [k, v] of ...)` |
-| `Object.fromEntries` | `Object.fromEntries(parejas)` | objeto nuevo a partir de un iterable de `[key, value]` (array o `Map`) | ES2019 |
-| `Object.hasOwn` | `Object.hasOwn(obj, key)` | `true` si la propiedad es **propia** (no heredada) | ES2022; sustituye a `obj.function hasOwnProperty() { [native code] }(key)` |
-| `Object.groupBy` | ver unidad 2 | | ES2024 |
+**Qué es:** `Object.keys`, `Object.values` y `Object.entries` convierten el objeto en **arrays** (de claves, de valores o de parejas). Con ellos ya puedes usar todo lo de la unidad 2. `Object.fromEntries` hace el camino de vuelta.
+
+**Para qué sirve:** sumar o pintar los valores de un objeto, recorrer sus propiedades y transformar todos sus valores de una vez.
 
 ```ts
 const grades: Record<string, number> = { dwec: 8, dwes: 7, diw: 9 };
@@ -259,25 +256,37 @@ console.log(outOfHundred); // { dwec: 80, dwes: 70, diw: 90 }
 console.log(Object.hasOwn(grades, 'dwec')); // true
 ```
 
+### Ficha técnica (para consultar)
+
+**Ficha técnica · métodos de `Object`**
+
+| Método | Firma | Devuelve | Ojo |
+|---|---|---|---|
+| `Object.keys` | `Object.keys(obj)` | `string[]` con las claves **propias y enumerables** | no incluye claves `Symbol`; en TS el tipo es `string[]`, no `(keyof T)[]` |
+| `Object.values` | `Object.values(obj)` | array con los valores | |
+| `Object.entries` | `Object.entries(obj)` | array de parejas `[key, value]` | ideal con `for (const [k, v] of ...)` |
+| `Object.fromEntries` | `Object.fromEntries(parejas)` | objeto nuevo a partir de un iterable de `[key, value]` (array o `Map`) | ES2019 |
+| `Object.hasOwn` | `Object.hasOwn(obj, key)` | `true` si la propiedad es **propia** (no heredada) | ES2022; sustituye a `obj.function hasOwnProperty() { [native code] }(key)` |
+| `Object.groupBy` | ver unidad 2 | | ES2024 |
+
 ---
 
 ## 7. `Set`: colecciones sin repetidos
 
-**Ficha técnica · `Set<T>`**
+**El problema:** quieres las categorías de la tienda para pintar los botones de filtro. Con `map` salen **repetidas**: `['peripherals', 'peripherals', 'monitors', ...]`.
 
-| Miembro | Firma | Devuelve | Ojo |
-|---|---|---|---|
-| constructor | `new Set<T>(iterable?)` | un conjunto con los valores **sin repetir** | vacío: indica el tipo, `new Set<string>()` |
-| `add` | `set.add(value)` | **el propio Set** (se puede encadenar) | **muta** |
-| `has` | `set.has(value)` | `boolean` | muy rápido, aunque haya miles de elementos |
-| `delete` | `set.delete(value)` | `true` si estaba y lo borró, `false` si no estaba | **muta** |
-| `clear` | `set.clear()` | `undefined` | **muta** |
-| `size` | propiedad | `number` | |
-| `values` / `keys` / `entries` / `forEach` | | iteradores; `forEach((value) => ...)` | orden de inserción |
-| `union` / `intersection` / `difference` / `symmetricDifference` | `a.union(b)` | un `Set` **nuevo** | ES2025 |
-| `isSubsetOf` / `isSupersetOf` / `isDisjointFrom` | `a.isSubsetOf(b)` | `boolean` | ES2025 |
+**Qué es:** un `Set` es una **colección de valores únicos**: cada valor está **una sola vez**, y si añades uno que ya está, no pasa nada. Piensa en la **lista de invitados** de una fiesta: nadie aparece dos veces, y en la puerta solo se pregunta **«¿está en la lista?»**. No tiene posiciones (`set[0]` no existe).
 
-**Comparación de valores:** igualdad *SameValueZero* (como `===`, pero `NaN` es igual a `NaN`). Los objetos se comparan **por referencia**: dos objetos `{ id: 1 }` distintos son dos elementos.
+**Para qué sirve:**
+
+| Uso | Pregunta del problema | Ejemplo |
+|---|---|---|
+| Quitar repetidos | «¿Qué valores distintos hay?» | categorías del catálogo |
+| «Ya visto» | «¿Esto ha salido antes?» | detectar un id repetido en un pedido |
+| Pertenencia | «¿Este valor está en la lista buena?» | ids del carrito que ya no existen |
+| Selección | «¿Está marcado?» | favoritos, casillas marcadas |
+
+**Cuándo no:** si los repetidos importan (dos teclados en el carrito), si necesitas posiciones u ordenar, o si vas a guardarlo en JSON (pásalo antes a array con `[...set]`).
 
 ```ts
 const tags = new Set<string>();
@@ -336,26 +345,42 @@ console.log(new Set(['dwec']).isSubsetOf(isaiasFollows)); // true
 > [!NOTE]
 > **Nota:** Requiere `"lib": ["ES2025", ...]` en el `tsconfig.json`.
 
+### Ficha técnica (para consultar)
+
+**Ficha técnica · `Set<T>`**
+
+| Miembro | Firma | Devuelve | Ojo |
+|---|---|---|---|
+| constructor | `new Set<T>(iterable?)` | un conjunto con los valores **sin repetir** | vacío: indica el tipo, `new Set<string>()` |
+| `add` | `set.add(value)` | **el propio Set** (se puede encadenar) | **muta** |
+| `has` | `set.has(value)` | `boolean` | muy rápido, aunque haya miles de elementos |
+| `delete` | `set.delete(value)` | `true` si estaba y lo borró, `false` si no estaba | **muta** |
+| `clear` | `set.clear()` | `undefined` | **muta** |
+| `size` | propiedad | `number` | |
+| `values` / `keys` / `entries` / `forEach` | | iteradores; `forEach((value) => ...)` | orden de inserción |
+| `union` / `intersection` / `difference` / `symmetricDifference` | `a.union(b)` | un `Set` **nuevo** | ES2025 |
+| `isSubsetOf` / `isSupersetOf` / `isDisjointFrom` | `a.isSubsetOf(b)` | `boolean` | ES2025 |
+
+**Comparación de valores:** igualdad *SameValueZero* (como `===`, pero `NaN` es igual a `NaN`). Los objetos se comparan **por referencia**: dos objetos `{ id: 1 }` distintos son dos elementos.
+
 ---
 
 ## 8. `Map`: diccionarios de verdad
 
-**Ficha técnica · `Map<K, V>`**
+**El problema:** el carrito guarda solo ids (`[1, 4, 1, 6]`) y necesitas el producto de cada uno. Con `find`, **cada búsqueda recorre toda la lista**.
 
-| Miembro | Firma | Devuelve | Ojo |
-|---|---|---|---|
-| constructor | `new Map<K, V>(parejas?)` | un mapa; `parejas` es un iterable de `[key, value]` | vacío: indica los tipos |
-| `set` | `map.set(key, value)` | **el propio Map** (encadenable) | **muta**; si la clave existe, sustituye el valor |
-| `get` | `map.get(key)` | <code>V &#124; undefined</code> | compruébalo siempre antes de usarlo |
-| `has` | `map.has(key)` | `boolean` | |
-| `delete` | `map.delete(key)` | `true` si existía | **muta** |
-| `clear` / `size` | | | |
-| `keys` / `values` / `entries` | | iteradores en **orden de inserción** | `for (const [k, v] of map)` usa `entries` |
-| `forEach` | `map.forEach((value, key, map) => ...)` | `undefined` | ojo al orden: **primero el valor**, después la clave |
-| `Map.groupBy` | `Map.groupBy(items, key)` | `Map<K, T[]>` | ES2024 |
+**Qué es:** un `Map` es una colección de **parejas clave → valor**. Le das la **clave** y te devuelve **su valor**, sin recorrer nada. Piensa en la **agenda del móvil**: buscas por nombre (la clave) y te sale el teléfono (el valor). La clave puede ser de **cualquier tipo**.
 
-> [!IMPORTANT]
-> **Claves:** pueden ser de cualquier tipo. Se comparan como en `Set`: `NaN` encuentra `NaN`, pero un objeto solo se encuentra con **la misma referencia** (`new Map([[{}, 1]]).get({})` es `undefined`).
+**Diferencia con `Set`:** el `Set` responde **«¿está?»**; el `Map` responde **«¿qué tengo guardado para esta clave?»**. Si tu problema dice **«para cada X, su Y»**, piensa en un `Map`.
+
+**Para qué sirve:**
+
+| Uso | «Para cada… su…» | Ejemplo |
+|---|---|---|
+| Índice | para cada id, su producto | buscar productos por id |
+| Contador | para cada id, cuántas veces | unidades vendidas por producto |
+| Agrupar | para cada categoría, su lista | productos por categoría |
+| Caché | para cada entrada, el resultado ya calculado | respuestas de una API ya pedidas |
 
 Un `Map` guarda **parejas clave → valor**. La clave puede ser de **cualquier tipo**, mantiene el orden de inserción y tiene `size`.
 
@@ -425,6 +450,25 @@ console.log(stockMap.get(1), stockMap.size);              // 5 2
 console.log(JSON.stringify(stockMap));                    // '{}'  ← un Map NO se guarda en JSON directamente
 console.log(JSON.stringify([...stockMap]));               // '[[1,5],[2,0]]'  ← primero, a array de parejas
 ```
+
+### Ficha técnica (para consultar)
+
+**Ficha técnica · `Map<K, V>`**
+
+| Miembro | Firma | Devuelve | Ojo |
+|---|---|---|---|
+| constructor | `new Map<K, V>(parejas?)` | un mapa; `parejas` es un iterable de `[key, value]` | vacío: indica los tipos |
+| `set` | `map.set(key, value)` | **el propio Map** (encadenable) | **muta**; si la clave existe, sustituye el valor |
+| `get` | `map.get(key)` | <code>V &#124; undefined</code> | compruébalo siempre antes de usarlo |
+| `has` | `map.has(key)` | `boolean` | |
+| `delete` | `map.delete(key)` | `true` si existía | **muta** |
+| `clear` / `size` | | | |
+| `keys` / `values` / `entries` | | iteradores en **orden de inserción** | `for (const [k, v] of map)` usa `entries` |
+| `forEach` | `map.forEach((value, key, map) => ...)` | `undefined` | ojo al orden: **primero el valor**, después la clave |
+| `Map.groupBy` | `Map.groupBy(items, key)` | `Map<K, T[]>` | ES2024 |
+
+> [!IMPORTANT]
+> **Claves:** pueden ser de cualquier tipo. Se comparan como en `Set`: `NaN` encuentra `NaN`, pero un objeto solo se encuentra con **la misma referencia** (`new Map([[{}, 1]]).get({})` es `undefined`).
 
 ---
 

@@ -44,17 +44,11 @@ Cuanto más concreto es el tipo, más propiedades tiene: solo un `HTMLInputEleme
 
 ## 2. Seleccionar elementos con seguridad
 
-**Ficha técnica · seleccionar**
+**El problema:** tienes en el HTML un buscador y una lista vacía. ¿Cómo llega tu código TypeScript a esos elementos?
 
-| Método | Firma | Devuelve | Ojo |
-|---|---|---|---|
-| `querySelector` | `root.querySelector(selectorCss)` | el **primer** elemento que coincide, o `null`. Tipo: <code>Element &#124; null</code> (o el tipo concreto si el selector es una etiqueta: `querySelector('input')` → <code>HTMLInputElement &#124; null</code>) | selector CSS inválido → `SyntaxError` |
-| `querySelectorAll` | `root.querySelectorAll(selectorCss)` | `NodeList` **estática** con todos (puede estar vacía) | no es un array: tiene `forEach` y `length`; para `map`/`filter`, `[...list]` |
-| `getElementById` | `document.getElementById(id)` | <code>HTMLElement &#124; null</code> | sin `#` delante del id |
-| `closest` | `element.closest(selectorCss)` | el propio elemento o el **antepasado** más cercano que coincide, o `null` | se incluye a sí mismo |
-| `matches` | `element.matches(selectorCss)` | `boolean` | |
+**Qué es:** **seleccionar** es pedirle al navegador una **referencia** a un elemento del DOM usando un **selector CSS**, el mismo que escribes en las hojas de estilo (`#id`, `.clase`, `etiqueta`).
 
-`root` puede ser `document` o cualquier elemento (busca solo dentro de él).
+**Para qué sirve:** leer lo que escribe el usuario, pintar dentro de un contenedor y escuchar eventos. **Todo** el trabajo con la página empieza seleccionando. La pega: el elemento **puede no existir**, y TypeScript no lee tu HTML, así que te obliga a comprobarlo.
 
 ```ts
 const list = document.querySelector('#list');
@@ -104,24 +98,29 @@ console.log(searchField, productList);
 - `type: new () => T` → «una clase que se puede construir con `new` y produce un `T`».
 - Si falta un elemento del HTML, es un error **del programador**: mejor que falle **al arrancar** con un mensaje claro.
 
+### Ficha técnica (para consultar)
+
+**Ficha técnica · seleccionar**
+
+| Método | Firma | Devuelve | Ojo |
+|---|---|---|---|
+| `querySelector` | `root.querySelector(selectorCss)` | el **primer** elemento que coincide, o `null`. Tipo: <code>Element &#124; null</code> (o el tipo concreto si el selector es una etiqueta: `querySelector('input')` → <code>HTMLInputElement &#124; null</code>) | selector CSS inválido → `SyntaxError` |
+| `querySelectorAll` | `root.querySelectorAll(selectorCss)` | `NodeList` **estática** con todos (puede estar vacía) | no es un array: tiene `forEach` y `length`; para `map`/`filter`, `[...list]` |
+| `getElementById` | `document.getElementById(id)` | <code>HTMLElement &#124; null</code> | sin `#` delante del id |
+| `closest` | `element.closest(selectorCss)` | el propio elemento o el **antepasado** más cercano que coincide, o `null` | se incluye a sí mismo |
+| `matches` | `element.matches(selectorCss)` | `boolean` | |
+
+`root` puede ser `document` o cualquier elemento (busca solo dentro de él).
+
 ---
 
 ## 3. Crear y modificar elementos
 
-**Ficha técnica · crear y modificar**
+**El problema:** tienes los productos en un array y una `<ul>` vacía. En el HTML no hay ninguna tarjeta: ¿cómo aparecen?
 
-| Miembro | Firma | Devuelve | Ojo |
-|---|---|---|---|
-| `createElement` | `document.createElement(label)` | el elemento con su tipo exacto (`'li'` → `HTMLLIElement`) | aún no está en la página hasta que se añade |
-| `append` / `prepend` | `parent.append(...nodesOrTexts)` | `undefined` | acepta textos (se añaden como texto, seguros) |
-| `replaceChildren` | `parent.replaceChildren(...nodesOrTexts)` | `undefined` | sin argumentos, vacía el elemento |
-| `remove` | `element.remove()` | `undefined` | se quita a sí mismo |
-| `textContent` | propiedad (`string`) | lee o escribe el **texto** | al escribir, sustituye todo el contenido |
-| `innerHTML` | propiedad (`string`) | lee o escribe **HTML** | riesgo de XSS con datos externos |
-| `classList` | `add(...)`, `remove(...)`, `contains(c)`, `toggle(c, force?)` | `toggle` devuelve `boolean`: si la clase queda puesta | |
-| `dataset` | `element.dataset.name` | <code>string &#124; undefined</code> | `data-product-id` ⟷ `dataset.productId`; **siempre texto** |
-| `setAttribute` / `getAttribute` / `removeAttribute` | `el.getAttribute(name)` | `getAttribute` → <code>string &#124; null</code> | |
-| `hidden` / `disabled` | propiedades `boolean` | | `disabled` solo en controles de formulario |
+**Qué es:** **crear** un elemento es fabricarlo desde el código (`document.createElement('li')`), **rellenarlo** (texto, clases, atributos) y **colgarlo** de un elemento de la página. Hasta que no lo cuelgas, no se ve.
+
+**Para qué sirve:** pintar todo lo que depende de los datos y no está escrito en el HTML: listas, resultados de búsqueda, mensajes, el carrito. Es lo que React hará por ti.
 
 ```ts
 function createCard(p: Product): HTMLLIElement {
@@ -179,6 +178,23 @@ if (copy instanceof DocumentFragment) {
 }
 ```
 
+### Ficha técnica (para consultar)
+
+**Ficha técnica · crear y modificar**
+
+| Miembro | Firma | Devuelve | Ojo |
+|---|---|---|---|
+| `createElement` | `document.createElement(label)` | el elemento con su tipo exacto (`'li'` → `HTMLLIElement`) | aún no está en la página hasta que se añade |
+| `append` / `prepend` | `parent.append(...nodesOrTexts)` | `undefined` | acepta textos (se añaden como texto, seguros) |
+| `replaceChildren` | `parent.replaceChildren(...nodesOrTexts)` | `undefined` | sin argumentos, vacía el elemento |
+| `remove` | `element.remove()` | `undefined` | se quita a sí mismo |
+| `textContent` | propiedad (`string`) | lee o escribe el **texto** | al escribir, sustituye todo el contenido |
+| `innerHTML` | propiedad (`string`) | lee o escribe **HTML** | riesgo de XSS con datos externos |
+| `classList` | `add(...)`, `remove(...)`, `contains(c)`, `toggle(c, force?)` | `toggle` devuelve `boolean`: si la clase queda puesta | |
+| `dataset` | `element.dataset.name` | <code>string &#124; undefined</code> | `data-product-id` ⟷ `dataset.productId`; **siempre texto** |
+| `setAttribute` / `getAttribute` / `removeAttribute` | `el.getAttribute(name)` | `getAttribute` → <code>string &#124; null</code> | |
+| `hidden` / `disabled` | propiedades `boolean` | | `disabled` solo en controles de formulario |
+
 ---
 
 ## 4. `textContent` frente a `innerHTML`: seguridad
@@ -203,29 +219,11 @@ Esto se llama **XSS** (*cross-site scripting*): un dato acaba ejecutándose como
 
 ## 5. Eventos
 
-**Ficha técnica · `addEventListener`**
+**El problema:** la página ya pinta los productos, pero no reacciona a nada.
 
-| | |
-|---|---|
-| **Firma** | `target.addEventListener(type, handler, options?)` |
-| **`type`** | nombre del evento sin `on`: `'click'`, `'input'`, `'submit'`... |
-| **`handler`** | `(event: EventType) => void`. TS deduce el tipo por el nombre (`'click'` → `MouseEvent`) |
-| **`options`** | `{ once?: boolean; signal?: AbortSignal; passive?: boolean; capture?: boolean }` |
-| **Devuelve** | `undefined` |
-| **Quitar** | `removeEventListener(type, sameFunction)` o, mejor, `{ signal }` + `controller.abort()` |
-| **Registrar dos veces la misma función** | no la duplica (se ignora la segunda) |
+**Qué es:** un **evento** es algo que **ocurre** en la página (un clic, una tecla, el envío de un formulario) y el navegador **avisa**. Con `addEventListener` le dices: **«cuando pase esto en este elemento, llama a esta función»**.
 
-**Ficha técnica · el objeto evento (`Event`)**
-
-| Miembro | Qué es |
-|---|---|
-| `type` | el nombre del evento |
-| `target` | el elemento **exacto** donde ocurrió (tipo <code>EventTarget &#124; null</code>) |
-| `currentTarget` | el elemento que tiene el **listener** (en la delegación, el contenedor) |
-| `preventDefault()` | cancela la acción por defecto (enviar formulario, seguir enlace) |
-| `stopPropagation()` | impide que el evento siga subiendo a los padres (úsalo con moderación: rompe la delegación) |
-| `KeyboardEvent.key` | la tecla: `'Enter'`, `'Escape'`, `'ArrowUp'`, `'a'`... |
-| `MouseEvent.clientX` / `clientY` | posición del ratón |
+**Para qué sirve:** **toda** la interacción: botones, buscadores que filtran mientras escribes, formularios, atajos de teclado.
 
 ```ts
 const button = document.createElement('button');
@@ -269,6 +267,32 @@ controller.abort();   // quita TODOS los listeners registrados con esa señal
 ```
 
 `{ signal }` es la forma moderna de **quitar listeners** sin guardar referencias a las funciones.
+
+### Ficha técnica (para consultar)
+
+**Ficha técnica · `addEventListener`**
+
+| | |
+|---|---|
+| **Firma** | `target.addEventListener(type, handler, options?)` |
+| **`type`** | nombre del evento sin `on`: `'click'`, `'input'`, `'submit'`... |
+| **`handler`** | `(event: EventType) => void`. TS deduce el tipo por el nombre (`'click'` → `MouseEvent`) |
+| **`options`** | `{ once?: boolean; signal?: AbortSignal; passive?: boolean; capture?: boolean }` |
+| **Devuelve** | `undefined` |
+| **Quitar** | `removeEventListener(type, sameFunction)` o, mejor, `{ signal }` + `controller.abort()` |
+| **Registrar dos veces la misma función** | no la duplica (se ignora la segunda) |
+
+**Ficha técnica · el objeto evento (`Event`)**
+
+| Miembro | Qué es |
+|---|---|
+| `type` | el nombre del evento |
+| `target` | el elemento **exacto** donde ocurrió (tipo <code>EventTarget &#124; null</code>) |
+| `currentTarget` | el elemento que tiene el **listener** (en la delegación, el contenedor) |
+| `preventDefault()` | cancela la acción por defecto (enviar formulario, seguir enlace) |
+| `stopPropagation()` | impide que el evento siga subiendo a los padres (úsalo con moderación: rompe la delegación) |
+| `KeyboardEvent.key` | la tecla: `'Enter'`, `'Escape'`, `'ArrowUp'`, `'a'`... |
+| `MouseEvent.clientX` / `clientY` | posición del ratón |
 
 ---
 

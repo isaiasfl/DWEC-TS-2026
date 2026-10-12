@@ -387,16 +387,7 @@ export function Lista({ products }: { products: readonly Product[] }) {
 
 ### `useState`: valores sencillos
 
-**Ficha técnica · `useState`**
-
-| | |
-|---|---|
-| **Firma** | `const [value, setValue] = useState<T>(initial)` |
-| **`initial`** | el valor inicial, o una **función** `() => T` que lo calcula (se ejecuta solo la primera vez) |
-| **Devuelve** | una tupla: `[value actual, función para cambiarlo]` |
-| **`setValue`** | `setValue(next)` o `setValue((previous) => next)`. Si el nuevo valor es **igual** (`Object.is`) al anterior, React no repinta |
-| **Cuándo cambia** | en el **siguiente** pintado: justo después de `setValue`, la variable `value` sigue teniendo el valor viejo |
-| **Regla** | los *hooks* se llaman siempre en el **nivel superior** del componente: nunca dentro de `if`, bucles ni funciones internas |
+**Qué es y para qué:** `useState` guarda **un valor que cambia** dentro de un componente (un contador, el texto de un buscador) y hace que React **vuelva a pintar** cuando lo cambias. Es el closure con memoria de la unidad 3.
 
 ```tsx
 import { useState } from 'react';
@@ -415,17 +406,20 @@ export function Counter() {
 - `setCount((n) => n + 1)`: la forma con función usa el valor **más reciente**.
 - **Nunca** mutes: `setList([...list, newItem])`, no `list.push(newItem)`. React compara con `===`: si mutas, **no repinta**.
 
-### `useReducer`: el reductor de octubre
-
-**Ficha técnica · `useReducer`**
+**Ficha técnica · `useState`**
 
 | | |
 |---|---|
-| **Firma** | `const [state, dispatch] = useReducer(reducer, initialArg, init?)` |
-| **`reducer`** | `(state: E, action: A) => E`: función **pura** |
-| **`initialArg`** | el estado inicial, o el argumento que recibe `init` |
-| **`init`** (opcional) | `(arg) => E`: calcula el estado inicial **una sola vez** |
-| **Devuelve** | `[state actual, dispatch]`; `dispatch(action)` no devuelve nada y su identidad es estable |
+| **Firma** | `const [value, setValue] = useState<T>(initial)` |
+| **`initial`** | el valor inicial, o una **función** `() => T` que lo calcula (se ejecuta solo la primera vez) |
+| **Devuelve** | una tupla: `[value actual, función para cambiarlo]` |
+| **`setValue`** | `setValue(next)` o `setValue((previous) => next)`. Si el nuevo valor es **igual** (`Object.is`) al anterior, React no repinta |
+| **Cuándo cambia** | en el **siguiente** pintado: justo después de `setValue`, la variable `value` sigue teniendo el valor viejo |
+| **Regla** | los *hooks* se llaman siempre en el **nivel superior** del componente: nunca dentro de `if`, bucles ni funciones internas |
+
+### `useReducer`: el reductor de octubre
+
+**Qué es y para qué:** `useReducer` guarda un estado que cambia con **acciones**, usando **tu reductor** de la unidad 5. Sirve cuando el estado tiene varias formas de cambiar (filtrar, añadir al carrito, cargar).
 
 ```tsx
 import { useReducer } from 'react';
@@ -456,21 +450,23 @@ export function App() {
 - En `onChange`, `e.target.value` ya es `string`: React sabe que el evento viene de un `<input>`.
 - `onChange` de React se dispara **con cada tecla** (como el evento `input` del DOM).
 
+**Ficha técnica · `useReducer`**
+
+| | |
+|---|---|
+| **Firma** | `const [state, dispatch] = useReducer(reducer, initialArg, init?)` |
+| **`reducer`** | `(state: E, action: A) => E`: función **pura** |
+| **`initialArg`** | el estado inicial, o el argumento que recibe `init` |
+| **`init`** (opcional) | `(arg) => E`: calcula el estado inicial **una sola vez** |
+| **Devuelve** | `[state actual, dispatch]`; `dispatch(action)` no devuelve nada y su identidad es estable |
+
 ---
 
 ## 9. Efectos: `useEffect`
 
-**Ficha técnica · `useEffect`**
+**El problema:** tu componente tiene que **cargar el catálogo** al aparecer y **guardar el carrito** cuando cambie. Pero un componente solo debe pintar.
 
-| | |
-|---|---|
-| **Firma** | `useEffect(effect, dependencias?)` |
-| **`effect`** | <code>() =&gt; void &#124; (() =&gt; void)</code>: puede devolver una función de **limpieza** |
-| **Cuándo se ejecuta** | **después** de pintar en pantalla |
-| **`dependencias`** | array de valores; el efecto se repite si alguno cambia (`Object.is`). `[]`: solo al montar. Sin array: tras **cada** pintado |
-| **Limpieza** | se ejecuta antes de repetir el efecto y al desmontar el componente |
-| **En desarrollo con `StrictMode`** | monta, desmonta y vuelve a montar: el efecto se ejecuta dos veces para detectar limpiezas que faltan |
-| **No es `async`** | el efecto no puede ser `async` (devolvería una promesa, no una limpieza). Usa una función `async` dentro o `.then` |
+**Para qué sirve:** pedir datos a una API, guardar en `localStorage`, temporizadores y suscripciones: todo lo que **no es pintar** pero tiene que ocurrir cuando el componente aparece o cuando cambia algo.
 
 Un componente debe ser **puro** (datos → pantalla). Lo que no es pintar (pedir datos, guardar, temporizadores) es un **efecto**:
 
@@ -512,6 +508,20 @@ export function Catalogo() {
 
 > [!TIP]
 > **Consejo:** En desarrollo, `<StrictMode>` monta, desmonta y vuelve a montar cada componente para detectar efectos sin limpieza. Por eso el `AbortController` y la comprobación `signal.aborted` son imprescindibles.
+
+### Ficha técnica (para consultar)
+
+**Ficha técnica · `useEffect`**
+
+| | |
+|---|---|
+| **Firma** | `useEffect(effect, dependencias?)` |
+| **`effect`** | <code>() =&gt; void &#124; (() =&gt; void)</code>: puede devolver una función de **limpieza** |
+| **Cuándo se ejecuta** | **después** de pintar en pantalla |
+| **`dependencias`** | array de valores; el efecto se repite si alguno cambia (`Object.is`). `[]`: solo al montar. Sin array: tras **cada** pintado |
+| **Limpieza** | se ejecuta antes de repetir el efecto y al desmontar el componente |
+| **En desarrollo con `StrictMode`** | monta, desmonta y vuelve a montar: el efecto se ejecuta dos veces para detectar limpiezas que faltan |
+| **No es `async`** | el efecto no puede ser `async` (devolvería una promesa, no una limpieza). Usa una función `async` dentro o `.then` |
 
 ---
 

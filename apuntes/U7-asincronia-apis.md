@@ -83,17 +83,7 @@ Una **promesa** representa un valor **que todavía no tienes**. Tiene tres estad
 
 ### Crear
 
-**Ficha técnica · `new Promise` y temporizadores**
-
-| Miembro | Firma | Devuelve | Ojo |
-|---|---|---|---|
-| constructor | `new Promise<T>((resolve, reject) => { ... })` | `Promise<T>` | la función (el *executor*) se ejecuta **inmediatamente y de forma síncrona**; si lanza un error, la promesa queda rechazada |
-| `resolve` | `resolve(value)` | — | cumple la promesa; solo cuenta la primera llamada |
-| `reject` | `reject(reason)` | — | la rechaza; usa siempre `new Error(...)` |
-| `Promise.resolve` / `Promise.reject` | `Promise.resolve(value)` | una promesa ya cumplida / rechazada | |
-| `setTimeout` | `setTimeout(fn, ms = 0, ...argumentos)` | un identificador | espera **mínima**, no exacta |
-| `clearTimeout` | `clearTimeout(id)` | `undefined` | cancela un `setTimeout` pendiente |
-| `setInterval` / `clearInterval` | igual, pero se repite cada `ms` | | recuerda cancelarlo |
+**Para qué:** normalmente las promesas las crean las librerías (`fetch`, por ejemplo). Crear una tú sirve para **entender** cómo funcionan y para convertir en promesa algo que no lo es, como un temporizador.
 
 ```ts
 function wait(ms: number): Promise<void> {
@@ -113,15 +103,21 @@ function simulateRequest<T>(data: T, ms: number, fail = false): Promise<T> {
 - `Promise<T>` es un **genérico**: `T` es el tipo del valor que **entregará**. `Promise<void>` avisa sin entregar nada.
 - Rechaza siempre con `new Error(...)`, nunca con un texto.
 
+**Ficha técnica · `new Promise` y temporizadores**
+
+| Miembro | Firma | Devuelve | Ojo |
+|---|---|---|---|
+| constructor | `new Promise<T>((resolve, reject) => { ... })` | `Promise<T>` | la función (el *executor*) se ejecuta **inmediatamente y de forma síncrona**; si lanza un error, la promesa queda rechazada |
+| `resolve` | `resolve(value)` | — | cumple la promesa; solo cuenta la primera llamada |
+| `reject` | `reject(reason)` | — | la rechaza; usa siempre `new Error(...)` |
+| `Promise.resolve` / `Promise.reject` | `Promise.resolve(value)` | una promesa ya cumplida / rechazada | |
+| `setTimeout` | `setTimeout(fn, ms = 0, ...argumentos)` | un identificador | espera **mínima**, no exacta |
+| `clearTimeout` | `clearTimeout(id)` | `undefined` | cancela un `setTimeout` pendiente |
+| `setInterval` / `clearInterval` | igual, pero se repite cada `ms` | | recuerda cancelarlo |
+
 ### Consumir: `then`, `catch`, `finally`
 
-**Ficha técnica · `then` / `catch` / `finally`**
-
-| Método | Firma | Devuelve | Detalle |
-|---|---|---|---|
-| `then` | `promise.then(onFulfilled?, onRejected?)` | una promesa **nueva** | `onFulfilled(value)`; lo que devuelva es el valor de la nueva promesa (si devuelve una promesa, se espera) |
-| `catch` | `promise.catch(onRejected)` | una promesa nueva | `onRejected(reason)`: el motivo es de tipo `any`; anótalo `unknown` |
-| `finally` | `promise.finally(onFinally)` | una promesa nueva | `onFinally` **no recibe argumentos** y deja pasar el valor o el error originales |
+**Qué es y para qué:** consumir una promesa es decir **qué hacer cuando termine**: con el valor si se cumple (`then`), con el error si se rechaza (`catch`) y en los dos casos (`finally`, por ejemplo para quitar el «Cargando…»).
 
 ```ts
 function simulateRequest<T>(data: T, ms: number, fail = false): Promise<T> {
@@ -138,6 +134,14 @@ simulateRequest(['teclado', 'ratón'], 100)
 
 > [!WARNING]
 > **Atención:** En `.catch((error) => ...)` el parámetro es `any`. Anótalo como `error: unknown` para que TypeScript te obligue a comprobarlo.
+
+**Ficha técnica · `then` / `catch` / `finally`**
+
+| Método | Firma | Devuelve | Detalle |
+|---|---|---|---|
+| `then` | `promise.then(onFulfilled?, onRejected?)` | una promesa **nueva** | `onFulfilled(value)`; lo que devuelva es el valor de la nueva promesa (si devuelve una promesa, se espera) |
+| `catch` | `promise.catch(onRejected)` | una promesa nueva | `onRejected(reason)`: el motivo es de tipo `any`; anótalo `unknown` |
+| `finally` | `promise.finally(onFinally)` | una promesa nueva | `onFinally` **no recibe argumentos** y deja pasar el valor o el error originales |
 
 ### `Promise.withResolvers` (ES2024)
 
@@ -165,16 +169,11 @@ console.log(pending);   // Promise { <pending> }
 
 ## 4. Combinar promesas
 
-**Ficha técnica · combinadores (todos reciben un iterable de promesas)**
+**El problema:** la pantalla de inicio necesita varias peticiones que **no dependen** unas de otras: el catálogo y las ofertas. Si las haces una detrás de otra, el tiempo se **suma**.
 
-| Método | Se cumple con | Se rechaza | Con iterable vacío | Desde |
-|---|---|---|---|---|
-| `Promise.all` | array con todos los valores, **en el mismo orden** (tupla en TS) | con el **primer** rechazo | se cumple con `[]` | ES2015 |
-| `Promise.allSettled` | array de `{ status: 'fulfilled', value }` o `{ status: 'rejected', reason }` | nunca | `[]` | ES2020 |
-| `Promise.race` | el primero que **termine** (bien o mal) | si el primero falla | queda pendiente **para siempre** | ES2015 |
-| `Promise.any` | el primero que se **cumpla** | solo si **todos** fallan, con un `AggregateError` (propiedad `errors`) | se rechaza | ES2021 |
-| `Promise.withResolvers` | — | — | — | ES2024 |
-| `Promise.try` | `Promise.try(fn, ...args)`: ejecuta la función y envuelve su resultado (o su error) en una promesa | | | ES2025 |
+**Qué es:** los **combinadores** (`Promise.all` y compañía) lanzan varias promesas **en paralelo** y te avisan cuando terminan todas, o la primera.
+
+**Para qué sirve:** que la página cargue en el tiempo de la petición **más lenta**, no en la suma de todas; y poner tiempos límite.
 
 ```ts
 function simulateRequest<T>(data: T, ms: number, fail = false): Promise<T> {
@@ -205,6 +204,19 @@ Promise.any([simulateRequest('espejo 1', 300, true), simulateRequest('espejo 2',
 
 > [!IMPORTANT]
 > **Clave:** Si las peticiones **no dependen** entre sí, lánzalas **en paralelo**.
+
+### Ficha técnica (para consultar)
+
+**Ficha técnica · combinadores (todos reciben un iterable de promesas)**
+
+| Método | Se cumple con | Se rechaza | Con iterable vacío | Desde |
+|---|---|---|---|---|
+| `Promise.all` | array con todos los valores, **en el mismo orden** (tupla en TS) | con el **primer** rechazo | se cumple con `[]` | ES2015 |
+| `Promise.allSettled` | array de `{ status: 'fulfilled', value }` o `{ status: 'rejected', reason }` | nunca | `[]` | ES2020 |
+| `Promise.race` | el primero que **termine** (bien o mal) | si el primero falla | queda pendiente **para siempre** | ES2015 |
+| `Promise.any` | el primero que se **cumpla** | solo si **todos** fallan, con un `AggregateError` (propiedad `errors`) | se rechaza | ES2021 |
+| `Promise.withResolvers` | — | — | — | ES2024 |
+| `Promise.try` | `Promise.try(fn, ...args)`: ejecuta la función y envuelve su resultado (o su error) en una promesa | | | ES2025 |
 
 ---
 
@@ -247,26 +259,11 @@ void main();
 
 ## 6. `fetch` y sus dos trampas
 
-**Ficha técnica · `fetch`**
+**El problema:** en una tienda real los productos no están en tu código, sino en un **servidor**.
 
-| | |
-|---|---|
-| **Firma** | `fetch(resource, options?)` |
-| **`resource`** | `string`, `URL` o `Request` |
-| **`options`** (`RequestInit`) | `method` (`'GET'` por defecto), `headers`, `body` (texto, `FormData`...), `signal` (para cancelar), `credentials`, `cache`... |
-| **Devuelve** | `Promise<Response>`: se cumple al llegar las **cabeceras**, aunque el estado sea 404 o 500 |
-| **Se rechaza** | solo si no hay respuesta: red caída, CORS, URL imposible (`TypeError`) o cancelación (`AbortError` / `TimeoutError`) |
+**Qué es:** `fetch` es la función del navegador para **hacer peticiones HTTP**: le das una URL y devuelve una **promesa** con la **respuesta** del servidor.
 
-**Ficha técnica · `Response`**
-
-| Miembro | Tipo / devuelve | Ojo |
-|---|---|---|
-| `ok` | `boolean`: `true` si `status` está entre 200 y 299 | compruébalo siempre |
-| `status` / `statusText` | `number` / `string` | 404, `'Not Found'` |
-| `headers.get(name)` | <code>string &#124; null</code> | |
-| `json()` | `Promise<any>` → guárdalo como `unknown` | lanza `SyntaxError` si el cuerpo no es JSON |
-| `text()` | `Promise<string>` | |
-| cuerpo | **se lee una sola vez** | leerlo dos veces lanza `TypeError` |
+**Para qué sirve:** leer datos de una API, enviar un formulario a un servidor, guardar cambios. Toda la comunicación con el exterior pasa por aquí, y por eso es una **frontera**: lo que llega se valida.
 
 **Construir URLs con parámetros: `URL` y `URLSearchParams`.** Codifican los valores por ti:
 
@@ -355,6 +352,29 @@ void createRemoteProduct({ title: 'Taza de Isaías', price: 12 });
 
 > [!TIP]
 > **Consejo:** Si el usuario escribe en una URL, codifícalo: `` `/products/search?q=${encodeURIComponent(text)}` ``.
+
+### Ficha técnica (para consultar)
+
+**Ficha técnica · `fetch`**
+
+| | |
+|---|---|
+| **Firma** | `fetch(resource, options?)` |
+| **`resource`** | `string`, `URL` o `Request` |
+| **`options`** (`RequestInit`) | `method` (`'GET'` por defecto), `headers`, `body` (texto, `FormData`...), `signal` (para cancelar), `credentials`, `cache`... |
+| **Devuelve** | `Promise<Response>`: se cumple al llegar las **cabeceras**, aunque el estado sea 404 o 500 |
+| **Se rechaza** | solo si no hay respuesta: red caída, CORS, URL imposible (`TypeError`) o cancelación (`AbortError` / `TimeoutError`) |
+
+**Ficha técnica · `Response`**
+
+| Miembro | Tipo / devuelve | Ojo |
+|---|---|---|
+| `ok` | `boolean`: `true` si `status` está entre 200 y 299 | compruébalo siempre |
+| `status` / `statusText` | `number` / `string` | 404, `'Not Found'` |
+| `headers.get(name)` | <code>string &#124; null</code> | |
+| `json()` | `Promise<any>` → guárdalo como `unknown` | lanza `SyntaxError` si el cuerpo no es JSON |
+| `text()` | `Promise<string>` | |
+| cuerpo | **se lee una sola vez** | leerlo dos veces lanza `TypeError` |
 
 ---
 
@@ -447,17 +467,11 @@ console.log(stateText({ type: 'ready', data: [] }));
 
 ## 9. Cancelar y limitar
 
-**Ficha técnica · `AbortController` / `AbortSignal`**
+**El problema:** en un buscador que pide mientras escribes, una respuesta **vieja** puede llegar después de la nueva y pisarla; y cada tecla lanza una petición de más.
 
-| Miembro | Firma | Qué hace |
-|---|---|---|
-| constructor | `new AbortController()` | crea un «mando» de cancelación |
-| `signal` | `controller.signal` | la señal que se entrega a `fetch` (o a `addEventListener`) |
-| `abort` | `controller.abort(reason?)` | cancela: el `fetch` se rechaza con un `DOMException` de nombre `'AbortError'` |
-| `signal.aborted` | `boolean` | si ya se canceló |
-| `signal.reason` | el motivo | |
-| `AbortSignal.timeout` | `AbortSignal.timeout(ms)` | una señal que se cancela sola pasados `ms`; error `'TimeoutError'` |
-| `AbortSignal.any` | `AbortSignal.any([s1, s2])` | se cancela cuando se cancela **cualquiera** de ellas |
+**Qué es:** **cancelar** es detener una petición en curso con un `AbortController` (un mando a distancia para la operación). **Limitar** es no lanzar peticiones de más: esperar a que el usuario deje de escribir (*debounce*).
+
+**Para qué sirve:** buscadores, salir de una pantalla antes de que termine la carga y poner tiempos límite.
 
 ### `AbortController`: que una respuesta vieja no pise a la nueva
 
@@ -515,6 +529,20 @@ const debouncedSearch = debounce((t) => console.log('Buscar:', t), 400);
 
 > [!IMPORTANT]
 > **Clave:** *Debounce evita peticiones inútiles; `AbortController` evita que una respuesta vieja pise a una nueva.*
+
+### Ficha técnica (para consultar)
+
+**Ficha técnica · `AbortController` / `AbortSignal`**
+
+| Miembro | Firma | Qué hace |
+|---|---|---|
+| constructor | `new AbortController()` | crea un «mando» de cancelación |
+| `signal` | `controller.signal` | la señal que se entrega a `fetch` (o a `addEventListener`) |
+| `abort` | `controller.abort(reason?)` | cancela: el `fetch` se rechaza con un `DOMException` de nombre `'AbortError'` |
+| `signal.aborted` | `boolean` | si ya se canceló |
+| `signal.reason` | el motivo | |
+| `AbortSignal.timeout` | `AbortSignal.timeout(ms)` | una señal que se cancela sola pasados `ms`; error `'TimeoutError'` |
+| `AbortSignal.any` | `AbortSignal.any([s1, s2])` | se cancela cuando se cancela **cualquiera** de ellas |
 
 ---
 
