@@ -3,7 +3,7 @@
 *Apuntes de **Isaías FL** · DWEC 2.º DAW*
 
 > **Para el alumnado:** entrega para el **viernes 16/10**. 40 minutos.
-> Carpeta: `src/exercises/s04-homework/NN-name/index.ts`. Sin `!` ni `as`. `npx tsc --noEmit` sin errores.
+> Carpeta: `src/exercises/s04-homework/exNN-name/index.ts`. Sin `!` ni `as`. `npx tsc --noEmit` sin errores.
 
 Datos: **TechStore Isaías FL**.
 

@@ -388,8 +388,8 @@ for (const p of products) {
 }
 console.log(units);
 
-// 🆕 ES2024: agrupar en un Map en una línea (requiere lib ES2025)
-const groups = Map.groupBy(products, (p) => (p.stock > 0 ? 'con stock' : 'soldOut'));
+// ES2024: agrupar en un Map en una línea (requiere "lib": ["ES2024", ...] en el tsconfig)
+const groups = Map.groupBy(products, (p) => (p.stock > 0 ? 'inStock' : 'soldOut'));
 console.log(groups.get('soldOut')?.map((p) => p.name));
 ```
 

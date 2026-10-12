@@ -3,7 +3,7 @@
 *Apuntes de **Isaías FL** · DWEC 2.º DAW*
 
 > **Para el alumnado:** entrega para el **miércoles 21/10**. 50 minutos.
-> Carpeta: `src/exercises/s06-homework/NN-name/index.ts`. Prohibido `any`, `as` y `!`. `npx tsc --noEmit` sin errores.
+> Carpeta: `src/exercises/s06-homework/exNN-name/index.ts`. Prohibido `any`, `as` y `!`. `npx tsc --noEmit` sin errores.
 
 ## Enunciados
 

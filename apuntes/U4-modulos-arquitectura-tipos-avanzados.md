@@ -376,7 +376,7 @@ function isProduct(raw: unknown): raw is Product {
   );
 }
 
-const received: unknown = JSON.parse('{"id":7,"nombre":"Webcam","precio":50,"categoria":"perifericos","stock":4}');
+const received: unknown = JSON.parse('{"id":7,"name":"Webcam","price":50,"category":"peripherals","stock":4}');
 if (isProduct(received)) {
   console.log(received.name);   // aquí llegado es Product, sin "as"
 }

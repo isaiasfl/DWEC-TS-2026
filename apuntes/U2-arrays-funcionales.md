@@ -366,7 +366,7 @@ const units = products.reduce(
   (acc, p) => ({ ...acc, [p.category]: acc[p.category] + p.stock }),
   initial,
 );
-console.log(units); // { perifericos: 5, monitores: 3, audio: 12 }
+console.log(units); // { peripherals: 5, monitors: 3, audio: 12 }
 ```
 
 - `Record<Category, number>` → un objeto con **las tres** categorías como claves y números como valores. Si olvidas una, error.
@@ -547,7 +547,7 @@ Agrupa los elementos según una clave, en una línea:
 
 ```ts
 const byCategory = Object.groupBy(products, (p) => p.category);
-// { perifericos: [...], monitores: [...], audio: [...] }
+// { peripherals: [...], monitors: [...], audio: [...] }
 console.log(byCategory.audio?.map((p) => p.name));
 ```
 
