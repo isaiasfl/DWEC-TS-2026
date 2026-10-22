@@ -2,34 +2,38 @@
 
 *Apuntes de **Isaías FL** · DWEC 2.º DAW*
 
-> **Para el alumnado:** entrega para el **martes 27/10**. 50 minutos.
-> Convierte la **agenda** de la sesión 07 al patrón **estado → render** con reductor. Prohibido modificar el DOM fuera de `render` y mutar el estado.
+> **Para el alumnado:** ejercicios para **practicar en casa** antes de la siguiente clase (unos 40 minutos). No se entregan, pero algún día te puede tocar **explicar tu solución** en clase.
+> Cada ejercicio en `src/exercises/s08-homework/exNN-name/index.ts`, con `export`, importado en `main.ts`. Antes de darlo por terminado: `npx tsc --noEmit` sin errores. Prohibido `any`, `as` y `!`.
 
 ## Enunciados
 
-### Ejercicio 1 · Estado
+### Ejercicio 1 · Fábrica de saludos
 
-`interface AgendaState { readonly contacts: readonly Contact[]; readonly text: string; readonly onlyFavorites: boolean }`.
+**Fábrica de saludos** (`ex01-greeter`). Crea `makeGreeter(greeting: string)` que devuelva una función que reciba un nombre y devuelva el saludo completo.
+`makeGreeter('Buenos días')('Ana')` → `'Buenos días, Ana'`. Fabrica dos saludadores distintos y úsalos con `map` sobre `['Ana', 'Luis']`.
 
-### Ejercicio 2 · Acciones
+### Ejercicio 2 · Fábrica de conversores
 
-`type AgendaAction` con: `search` (texto), `toggleOnlyFavorites`, `toggleFavorite` (id) y `remove` (id).
+**Fábrica de conversores** (`ex02-converter`). Crea `makeConverter(factor: number)` que devuelva una función que multiplique por `factor`. Fabrica `kmToMiles` (0.621) y `eurosToDollars` (1.08) y muestra `10` convertido con cada uno, con dos decimales.
 
-### Ejercicio 3 · Reductor
+### Ejercicio 3 · Closure: el marcador de un partido
 
-`agendaReducer(state, action): AgendaState` en `domain/`, con `switch` exhaustivo.
+**Closure: el marcador de un partido** (`ex03-scoreboard`). Crea `makeScoreboard()` que devuelva un objeto con tres funciones que compartan la misma mochila:
+- `scoreHome()` y `scoreAway()` suman un punto a cada equipo;
+- `result()` devuelve un texto como `'2 - 1'`.
+Comprueba que dos marcadores distintos **no se mezclan**.
 
-### Ejercicio 4 · Vista
+### Ejercicio 4 · Capas: la biblioteca
 
-Cada fila tiene dos botones con `data-action` y `data-id`: «★» (alternar favorito) y «Borrar» (borrar). **Un solo** listener en el `<ul>`.
+**Capas: la biblioteca** (`ex04-library`). Organiza en capas, con los nombres de clase:
+- `types/book.ts`: `interface Book { readonly title: string; readonly author: string; readonly available: boolean }`;
+- `services/books.ts`: un array con 5 libros (alguno no disponible);
+- `utils/library.ts`: `availableBooks(list)` y `booksBy(list, author)`, **sin `console.log`**;
+- `index.ts`: muestra por consola cuántos libros hay disponibles y los títulos de un autor.
 
-### Ejercicio 5 · `dispatch` y `render`
+### Ejercicio 5 · Pregunta (escríbela como comentario en `ex04-library/index.ts`)
 
-**`dispatch` y `render`** en `main.ts`, como en clase.
-
-### Ejercicio 6 · Prueba sin navegador
-
-En un fichero aparte, encadena 4 acciones con `agendaReducer` y muestra el estado final con `console.log`. (El reductor es puro: se puede probar sin DOM.)
+Si mañana los libros vinieran de una API, ¿qué archivo cambiarías y cuáles no? ¿Por qué?
 
 ---
 

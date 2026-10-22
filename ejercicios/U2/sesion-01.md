@@ -2,7 +2,7 @@
 
 *Apuntes de **Isaías FL** · DWEC 2.º DAW*
 
-> **Para el alumnado:** entrega para el **miércoles 7/10**. Tiempo estimado: 50–60 minutos.
+> **Para el alumnado:** ejercicios para **practicar en casa** antes de la siguiente clase (unos 50–60 minutos). No se entregan, pero algún día te puede tocar **explicar tu solución** en clase.
 > Lee primero el apartado **Antes de empezar** entero: ahí está dónde va cada fichero, los datos y cómo se comprueba.
 
 ## Antes de empezar
@@ -62,7 +62,7 @@ export interface Product {
 }
 ```
 
-`src/data/products.ts`:
+`src/services/products.ts`:
 
 ```ts
 import type { Product } from '../types/product';
@@ -86,7 +86,7 @@ src/
 ├── main.ts                                   ← vacío: aquí pruebas cada ejercicio
 ├── types/
 │   └── product.ts                            ← paso 2
-├── data/
+├── services/
 │   └── products.ts                           ← paso 2
 └── exercises/
     └── s01-homework/
@@ -135,9 +135,9 @@ Después de **cada** ejercicio:
 > [!WARNING]
 > **Trampa:** `npm run dev` no comprueba tipos. La página puede funcionar con errores de TypeScript: el que manda es `npx tsc --noEmit`.
 
-### Paso 6 · Qué entregas
+### Paso 6 · Cómo dejarlo terminado
 
-Tu proyecto con la estructura del paso 3, subido a tu repositorio de GitHub, y el enlace en la tarea de Moodle. Antes de entregar, `npx tsc --noEmit` sin errores.
+Tu proyecto con la estructura del paso 3, subido a tu repositorio de GitHub. Antes de darlo por terminado, `npx tsc --noEmit` sin errores.
 
 ---
 
@@ -170,7 +170,7 @@ La tienda quiere mostrar en el escaparate una etiqueta de texto por cada product
 **Comprueba (subhito 1 de 6):** añade en `src/main.ts`:
 
 ```ts
-import { products } from './data/products';
+import { products } from './services/products';
 import { tags } from './exercises/s01-homework/ex01-tags';
 
 console.log('ej01', tags(products));

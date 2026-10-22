@@ -2,7 +2,7 @@
 
 *Apuntes de **Isaías FL** · DWEC 2.º DAW*
 
-> **Para el alumnado:** entrega para el **miércoles 11/11**. 60 minutos.
+> **Para el alumnado:** ejercicios para **practicar en casa** antes de la siguiente clase (unos 60 minutos). No se entregan, pero algún día te puede tocar **explicar tu solución** en clase.
 > Proyecto `agenda-react` creado con `npm create vite@latest agenda-react -- --template react-ts`. Commit con `lazygit`: `s15: agenda en React`.
 
 **Pasa tu agenda de octubre (sesiones 07–09) a React.**
@@ -11,7 +11,7 @@
 
 ### Ejercicio 1 · Mudanza
 
-Copia tu `domain/` (tipos `Contact`, `agendaReducer`, `validateContact`, `filterContacts`) y tu `services/storage.ts`. `npm run build` debe pasar **sin tocar** esos ficheros. Si no pasa, anota en `NOTAS.md` qué tuviste que cambiar y por qué (pista: si algo del dominio usaba el DOM, estaba en la capa equivocada).
+Copia tu `utils/` (tipos `Contact`, `agendaReducer`, `validateContact`, `filterContacts`) y tu `services/storage.ts`. `npm run build` debe pasar **sin tocar** esos ficheros. Si no pasa, anota en `NOTAS.md` qué tuviste que cambiar y por qué (pista: si algo del dominio usaba el DOM, estaba en la capa equivocada).
 
 ### Ejercicio 2 · `main.tsx` sin `!`
 

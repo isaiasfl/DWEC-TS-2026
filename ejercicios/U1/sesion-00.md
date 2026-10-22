@@ -2,7 +2,7 @@
 
 *Apuntes de **Isaías FL** · DWEC 2.º DAW*
 
-> **Para el alumnado:** entrega para el **viernes 9/10**. Tiempo estimado: 45–60 minutos.
+> **Para el alumnado:** ejercicios para **practicar en casa** antes de la siguiente clase (unos 45–60 minutos). No se entregan, pero algún día te puede tocar **explicar tu solución** en clase.
 > Lee primero el apartado **Antes de empezar** entero: ahí está dónde va cada fichero y cómo se comprueba.
 
 ## Antes de empezar
@@ -59,7 +59,7 @@ src/
 ├── main.ts                                   ← ya existe: aquí pruebas cada ejercicio
 ├── types/
 │   └── pet.ts                                ← ejercicio 1
-├── data/
+├── services/
 │   └── pets.ts                               ← ejercicio 2
 └── exercises/
     └── s00-homework/
@@ -80,7 +80,7 @@ Cómo se leen los nombres de carpeta:
 | `-describe` | nombre en inglés de lo que hace, en minúsculas y con guiones | `average-age` |
 
 > [!IMPORTANT]
-> **Regla:** los tipos van en `src/types/`, los datos en `src/data/` y cada función en la carpeta de su ejercicio. Así cualquier ejercicio importa los tipos y los datos desde el mismo sitio.
+> **Regla:** los tipos van en `src/types/`, los datos en `src/services/` y cada función en la carpeta de su ejercicio. Así cualquier ejercicio importa los tipos y los datos desde el mismo sitio.
 
 ### Paso 3 · Reglas de esta hoja
 
@@ -101,9 +101,9 @@ Después de **cada** ejercicio:
 > [!WARNING]
 > **Trampa:** `npm run dev` no comprueba tipos. La página puede funcionar con errores de TypeScript: el que manda es `npx tsc --noEmit`.
 
-### Paso 5 · Qué entregas
+### Paso 5 · Cómo dejarlo terminado
 
-Tu proyecto con la estructura del paso 2, subido a tu repositorio de GitHub, y el enlace en la tarea de Moodle. Antes de entregar, `npx tsc --noEmit` sin errores.
+Tu proyecto con la estructura del paso 2, subido a tu repositorio de GitHub. Antes de darlo por terminado, `npx tsc --noEmit` sin errores.
 
 ---
 
@@ -136,7 +136,7 @@ Vas a definir **cómo es una mascota** para que TypeScript pueda avisarte si esc
 
 Vas a crear la lista de mascotas con la que probarás el resto de ejercicios.
 
-**Fichero:** `src/data/pets.ts`
+**Fichero:** `src/services/pets.ts`
 
 **Qué tienes que hacer:**
 
@@ -170,7 +170,7 @@ export const pets: Pet[] = [
 **Comprueba (subhito 2 de 7):** en `src/main.ts`, borra lo que trae Vite y escribe:
 
 ```ts
-import { pets } from './data/pets';
+import { pets } from './services/pets';
 
 console.log('ej02', pets.length);
 ```
@@ -351,7 +351,7 @@ No hay que programar nada nuevo. Vas a provocar dos errores a propósito, leer l
 
 **Qué tienes que hacer:**
 
-1. **Primer error.** En `src/data/pets.ts`, cambia temporalmente la especie de Toby a `species: 'fish'`. Ejecuta `npx tsc --noEmit` y copia el mensaje de error.
+1. **Primer error.** En `src/services/pets.ts`, cambia temporalmente la especie de Toby a `species: 'fish'`. Ejecuta `npx tsc --noEmit` y copia el mensaje de error.
 2. Deshaz el cambio y comprueba que `tsc` vuelve a estar sin errores.
 3. **Segundo error.** En `src/main.ts`, escribe temporalmente esta línea **sin** ningún `if` delante:
 

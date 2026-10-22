@@ -2,7 +2,7 @@
 
 *Apuntes de **Isaías FL** · DWEC 2.º DAW*
 
-> **Para el alumnado:** entrega para el **martes 13/10** (el viernes se entregan los de [puesta al día](../U1/sesion-00.md)). Tiempo estimado: 45–60 minutos.
+> **Para el alumnado:** ejercicios para **practicar en casa** antes de la siguiente clase (unos 45–60 minutos). No se entregan, pero algún día te puede tocar **explicar tu solución** en clase.
 > Lee primero el apartado **Antes de empezar** entero: ahí está dónde va cada fichero, los datos y cómo se comprueba.
 
 ## Antes de empezar
@@ -36,7 +36,7 @@ No pases al siguiente subhito hasta que el actual cumpla su **Comprueba**.
 
 ### Paso 1 · El proyecto y los datos
 
-Sigue en el mismo proyecto Vite (`tienda`). Los datos son **los mismos de la sesión 01**: `src/types/product.ts` y `src/data/products.ts`, sin ningún cambio. Si los has tocado, vuelve a dejarlos exactamente como en la hoja de la sesión 01: los resultados de esta hoja están calculados con ellos.
+Sigue en el mismo proyecto Vite (`tienda`). Los datos son **los mismos de la sesión 01**: `src/types/product.ts` y `src/services/products.ts`, sin ningún cambio. Si los has tocado, vuelve a dejarlos exactamente como en la hoja de la sesión 01: los resultados de esta hoja están calculados con ellos.
 
 Abre `src/main.ts` y **borra todo su contenido**: en esta hoja lo vas a rellenar con las pruebas de la sesión 02. Tus ejercicios anteriores no se pierden, siguen en sus carpetas.
 
@@ -48,7 +48,7 @@ Créala **exactamente así** antes de escribir código. Los ficheros pueden esta
 src/
 ├── main.ts                                       ← vacío: aquí pruebas cada ejercicio
 ├── types/product.ts                              ← ya existe (sesión 01)
-├── data/products.ts                              ← ya existe (sesión 01)
+├── services/products.ts                              ← ya existe (sesión 01)
 └── exercises/
     └── s02-homework/
         ├── ex01-total-units/index.ts             ← ejercicio 1
@@ -86,9 +86,9 @@ Después de **cada** ejercicio:
 > [!WARNING]
 > **Trampa:** `npm run dev` no comprueba tipos. La página puede funcionar con errores de TypeScript: el que manda es `npx tsc --noEmit`.
 
-### Paso 5 · Qué entregas
+### Paso 5 · Cómo dejarlo terminado
 
-Tu proyecto con la estructura del paso 2, subido a tu repositorio de GitHub, y el enlace en la tarea de Moodle. Antes de entregar, `npx tsc --noEmit` sin errores.
+Tu proyecto con la estructura del paso 2, subido a tu repositorio de GitHub. Antes de darlo por terminado, `npx tsc --noEmit` sin errores.
 
 ---
 
@@ -117,7 +117,7 @@ El almacén quiere saber cuántas unidades tiene en total, sumando el `stock` de
 **Comprueba (subhito 1 de 5):** añade en `src/main.ts`:
 
 ```ts
-import { products } from './data/products';
+import { products } from './services/products';
 import { totalUnits } from './exercises/s02-homework/ex01-total-units';
 
 console.log('ej01', totalUnits(products), totalUnits([]));

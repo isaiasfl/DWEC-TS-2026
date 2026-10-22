@@ -2,8 +2,8 @@
 
 *Apuntes de **Isaías FL** · DWEC 2.º DAW*
 
-> **Para el alumnado:** entrega para el **viernes 23/10**. 45 minutos.
-> Proyecto Vite nuevo `agenda-isaias` con capas `domain/`, `data/`, `ui/`. Prohibido `innerHTML` con datos, `as` y `!`. `npx tsc --noEmit` sin errores.
+> **Para el alumnado:** ejercicios para **practicar en casa** antes de la siguiente clase (unos 45 minutos). No se entregan, pero algún día te puede tocar **explicar tu solución** en clase.
+> Proyecto Vite nuevo `agenda-isaias` con capas `utils/`, `services/`, `components/`. Prohibido `innerHTML` con datos, `as` y `!`. `npx tsc --noEmit` sin errores.
 
 **Agenda de contactos del departamento de Isaías FL.**
 
@@ -20,7 +20,7 @@ export interface Contact {
 
 ### Ejercicio 1 · Datos
 
-6 contactos en `data/contacts.ts` (2 favoritos).
+6 contactos en `services/contacts.ts` (2 favoritos).
 
 ### Ejercicio 2 · Dominio
 

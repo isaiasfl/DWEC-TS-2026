@@ -2,7 +2,7 @@
 
 *Apuntes de **Isaías FL** · DWEC 2.º DAW*
 
-> **Para el alumnado:** entrega para el **miércoles 14/10**. 45 minutos.
+> **Para el alumnado:** ejercicios para **practicar en casa** antes de la siguiente clase (unos 45 minutos). No se entregan, pero algún día te puede tocar **explicar tu solución** en clase.
 > Carpeta: `src/exercises/s03-homework/exNN-name/index.ts`. **Prohibido** `push`, `splice`, `sort` y asignar propiedades (`x.algo = ...`). `npx tsc --noEmit` sin errores.
 
 Vamos a gestionar las **tareas** del equipo de Isaías FL:

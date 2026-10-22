@@ -2,36 +2,37 @@
 
 *Apuntes de **Isaías FL** · DWEC 2.º DAW*
 
-> **Para el alumnado:** entrega para el **martes 3/11**. 50 minutos.
-> Carpeta `src/exercises/s11-homework/`. Prohibido `as`, `!` y `any`. Todo lo que venga de `fetch` se guarda como `unknown` y se valida.
-
-API: `https://dummyjson.com` (usuarios: `/users/{id}` y `/users?limit=5&select=id,firstName,lastName,email`).
+> **Para el alumnado:** ejercicios para **practicar en casa** antes de la siguiente clase (unos 40 minutos). No se entregan, pero algún día te puede tocar **explicar tu solución** en clase.
+> Carpeta `src/exercises/s11-homework/`. Solo `then`/`catch`/`finally` (todavía **sin** `async`/`await`). `error: unknown` en todos los `catch`.
 
 ## Enunciados
 
-### Ejercicio 1 · Rehaz con `await`
+### Ejercicio 1 · Predice y explica
 
-**Rehaz con `await`** la cuenta atrás de la sesión 10: `countdown(from: number): Promise<void>` con un `for` y `await wait(1000)`. Compara la longitud con tu versión con `then`.
+Copia este código en un comentario, escribe el orden que esperas y después ejecútalo. Explica cualquier diferencia.
+```ts
+console.log('A');
+setTimeout(() => console.log('B'), 10);
+setTimeout(() => console.log('C'), 0);
+Promise.resolve().then(() => console.log('D'));
+console.log('E');
+```
 
-### Ejercicio 2 · DTO de usuario
+### Ejercicio 2 · Cuenta atrás
 
-`interface ApiUser { id: number; firstName: string; lastName: string; email: string }` y su type guard `isApiUser`.
+`countdown(from: number): Promise<void>` que imprima `3`, `2`, `1`, `¡Ya!` con un segundo entre cada uno (usa `wait` y encadena).
 
-### Ejercicio 3 · Un usuario
+### Ejercicio 3 · Stock remoto
 
-`getUser(id: number): Promise<ApiUser>` usando `fetchJson`. Prueba con `1` y con `99999` (debe lanzar un error con el 404).
+`checkStock(id: number): Promise<number>` que, con `simulateRequest`, devuelva el stock de un producto de TechStore Isaías FL tras 300 ms, o **rechace** con `new Error('Producto no encontrado')` si el id no existe.
 
-### Ejercicio 4 · Lista
+### Ejercicio 4 · Varios a la vez
 
-`getUsers(): Promise<ApiUser[]>` (la respuesta tiene la forma `{ users: [...] }`).
+`stockOfMany(ids: number[]): Promise<number[]>` con `Promise.all` y `checkStock`. ¿Qué pasa si un id no existe?
 
-### Ejercicio 5 · Sin excepciones
+### Ejercicio 5 · Tolerante
 
-`fullName(id: number): Promise<Result<string>>` que nunca lance: `{ ok: true, value: 'Emily Johnson' }` o `{ ok: false, error: '...' }`.
-
-### Ejercicio 6 · Paralelo
-
-`namesOf(ids: number[]): Promise<string[]>` con `Promise.allSettled`: los que fallen se muestran como `'(desconocido)'`.
+`availableStockOfMany(ids: number[]): Promise<number>` → suma el stock de los que existan, ignorando los que fallen (`allSettled`).
 
 ---
 

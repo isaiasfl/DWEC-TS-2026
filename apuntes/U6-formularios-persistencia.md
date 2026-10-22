@@ -2,399 +2,528 @@
 
 *Apuntes de **Isaías FL** · Desarrollo Web en Entorno Cliente · 2.º DAW · Curso 2026‑27*
 
-> **Qué vas a aprender:** a leer formularios con `FormData`, a **convertir y validar** lo que escribe el usuario, a mostrar errores accesibles por campo y a guardar datos en el navegador con `localStorage` **sin fiarte** de lo que lees. La idea central de la unidad: **los tipos acaban en la frontera**.
+> **Qué vas a aprender:** a leer lo que el usuario escribe en un formulario, a **convertirlo y validarlo** antes de usarlo, a enseñarle sus errores campo a campo y a **recordar datos** aunque recargue la página con `localStorage`.
+> **La idea de toda la unidad cabe en una frase:** *lo que llega de fuera no es de fiar hasta que tú lo compruebas.*
 
 ---
 
 ## Índice
 
-1. [La idea clave: la frontera](#1-la-idea-clave-la-frontera)
+1. [El problema: el usuario siempre escribe texto](#1-el-problema-el-usuario-siempre-escribe-texto)
 2. [El formulario y el evento `submit`](#2-el-formulario-y-el-evento-submit)
-3. [Leer con `FormData`](#3-leer-con-formdata)
+3. [Leer el formulario con `FormData`](#3-leer-el-formulario-con-formdata)
 4. [Convertir no es validar](#4-convertir-no-es-validar)
 5. [Validar en el dominio](#5-validar-en-el-dominio)
-6. [Mostrar los errores](#6-mostrar-los-errores)
-7. [`localStorage`: guardar en el navegador](#7-localstorage-guardar-en-el-navegador)
-8. [Cargar con desconfianza](#8-cargar-con-desconfianza)
-9. [Autoevaluación](#9-autoevaluación)
+6. [Enseñar los errores](#6-enseñar-los-errores)
+7. [`localStorage`: que no se pierda al recargar](#7-localstorage-que-no-se-pierda-al-recargar)
+8. [Guardar listas y objetos: JSON](#8-guardar-listas-y-objetos-json)
+9. [Cargar con desconfianza](#9-cargar-con-desconfianza)
+10. [Fichas técnicas](#10-fichas-técnicas)
+11. [Autoevaluación](#11-autoevaluación)
 
 ---
 
-## 1. La idea clave: la frontera
+## 1. El problema: el usuario siempre escribe texto
 
-Dentro de tu código, TypeScript garantiza los tipos. Pero lo que entra desde **fuera** no tiene tipo real:
-
-| Frontera | Qué llega de verdad |
-|---|---|
-| Un formulario | **texto** (`string`), aunque el campo sea un número |
-| `localStorage` | **texto** o `null` |
-| `JSON.parse` | **`any`** → guárdalo como `unknown` |
-| Una API (unidad 7) | `any` → guárdalo como `unknown` |
-
-> **En la frontera: convertir y validar con código.** TypeScript no hace ninguna de las dos cosas.
-
-![Diagrama: lo de fuera se convierte y se valida antes de entrar al dominio](img/frontera.svg)
-
-**Ejemplo comentado: un precio que llega de un formulario.**
+Imagina un formulario que pregunta la edad. El usuario escribe `17` y tu código suma 1 para saber cuántos años cumplirá:
 
 ```ts
-const typed: string = '49,90';                         // lo que escribió el usuario: SIEMPRE texto
-
-const converted = Number(typed.replace(',', '.'));     // 1. convertir → 49.9
-const isValid = Number.isFinite(converted) && converted > 0;   // 2. validar: ¿tiene sentido?
-
-if (isValid) {
-  console.log(`Precio aceptado: ${converted} €`);       // 3. ya se puede usar como number
-} else {
-  console.log('Precio no válido');
-}
+const typedAge = '17';            // lo que llega del <input>: SIEMPRE texto
+console.log(typedAge + 1);        // "171"  ← ¡ha pegado un 1, no ha sumado!
+console.log(Number(typedAge) + 1); // 18    ← primero hay que convertir
 ```
+
+Aunque el campo sea `<input type="number">`, lo que lees desde el código es **texto**. Y además el usuario puede escribir cualquier cosa: nada, `diecisiete`, `-4`, `17,5`...
+
+Esto pasa en todas las **fronteras** de una aplicación, los sitios por donde entran datos de fuera:
+
+| Por dónde entra | Qué llega de verdad |
+|---|---|
+| Un formulario | texto (`string`) |
+| `localStorage` | texto, o `null` si no hay nada |
+| `JSON.parse` | `any`: TypeScript no sabe qué es |
+| Una API (unidad 7) | `any` |
+
+> [!IMPORTANT]
+> **Clave:** TypeScript comprueba tu código **antes** de ejecutarlo. No puede saber qué escribirá el usuario mañana. Por eso en la frontera hay que **convertir** y **validar** con código que se ejecuta de verdad.
+
+![Diagrama: lo de fuera se convierte y se valida antes de entrar al dominio](img/frontera.svg)
 
 ---
 
 ## 2. El formulario y el evento `submit`
 
-**El problema:** quieres que el usuario pueda **dar de alta** productos en TechStore, en vez de escribirlos tú en el código.
+**El problema:** el club de pádel quiere que los jugadores se apunten al torneo desde la web, en vez de mandar un mensaje.
 
-**Qué es:** un **formulario** (`<form>`) agrupa los campos que rellena el usuario. Al pulsar *Enviar* (o Enter) lanza el evento **`submit`**, que tú escuchas para leer los datos.
+**Qué es:** un `<form>` agrupa los campos que rellena el usuario. Cuando pulsa el botón de enviar (o Enter dentro de un campo), el formulario lanza el evento **`submit`**.
 
-**Para qué sirve:** cualquier dato que escribe el usuario: altas, ediciones, búsquedas, inicio de sesión.
+**Para qué sirve:** para cualquier dato que escribe el usuario: inscripciones, búsquedas, comentarios, inicio de sesión.
 
 ```html
-<form id="product-form" novalidate>
+<form id="signup-form" novalidate>
   <label>Nombre <input name="name" /></label>
   <small data-error-for="name"></small>
 
-  <label>Precio (€) <input name="price" inputmode="decimal" /></label>
-  <small data-error-for="price"></small>
+  <label>Edad <input name="age" inputmode="numeric" /></label>
+  <small data-error-for="age"></small>
 
-  <label>Categoría
-    <select name="category">
+  <label>Nivel
+    <select name="level">
       <option value="">— Elige —</option>
-      <option value="peripherals">Periféricos</option>
-      <option value="monitors">Monitores</option>
-      <option value="audio">Audio</option>
+      <option value="beginner">Iniciación</option>
+      <option value="intermediate">Intermedio</option>
+      <option value="advanced">Avanzado</option>
     </select>
   </label>
-  <small data-error-for="category"></small>
+  <small data-error-for="level"></small>
 
-  <label>Stock <input name="stock" inputmode="numeric" /></label>
-  <small data-error-for="stock"></small>
+  <label><input type="checkbox" name="rules" /> Acepto las normas del torneo</label>
+  <small data-error-for="rules"></small>
 
-  <button type="submit">Añadir a TechStore Isaías FL</button>
+  <button type="submit">Inscribirme</button>
 </form>
 ```
 
-- `name="..."` es **la clave** con la que se lee cada campo. Sin `name`, el campo no existe para `FormData`.
-- `novalidate` desactiva la validación del navegador para hacerla **nosotros**, con mensajes propios. La validación HTML (`required`, `min`) ayuda, pero **se salta** fácilmente con las herramientas del navegador.
-- `inputmode` muestra el teclado adecuado en el móvil.
+Tres detalles del HTML:
+
+- **`name="..."`** es el nombre con el que leeremos cada campo. Un campo sin `name` no se lee.
+- **`novalidate`** apaga los mensajes automáticos del navegador: los mensajes los pondremos nosotros, en español y donde queramos.
+- **`<small data-error-for="age">`** es el hueco donde escribiremos el error de ese campo.
+
+Y en TypeScript escuchamos el `submit` **del formulario**:
 
 ```ts
-const form = document.createElement('form');
+const form = document.querySelector('#signup-form');
+if (!(form instanceof HTMLFormElement)) throw new Error('Falta #signup-form');
+
 form.addEventListener('submit', (event) => {
-  event.preventDefault();          // ¡primera línea siempre! Si no, la página se recarga
-  // leer → validar → usar
+  event.preventDefault();   // ¡la primera línea, siempre!
+  console.log('Han pulsado Inscribirme');
 });
 ```
 
-Escucha `submit` en el **formulario** (no `click` en el botón): así funciona también al pulsar **Enter**.
+**¿Por qué `preventDefault()`?** Lo que hace un formulario por defecto es **enviarse y recargar la página**. Si no lo evitas, la página se recarga, tu código se pierde y parece que «no hace nada».
 
-### Ficha técnica (para consultar)
-
-**Ficha técnica · `HTMLFormElement`**
-
-| Miembro | Qué hace |
-|---|---|
-| evento `submit` | se lanza al pulsar un botón `type="submit"` o Enter en un campo. Tipo: `SubmitEvent` |
-| `event.preventDefault()` | evita el envío y la recarga de la página |
-| `form.elements.namedItem(name)` | el control con ese `name`: <code>Element &#124; RadioNodeList &#124; null</code> |
-| `form.reset()` | vuelve los campos a sus valores iniciales |
-| `form.requestSubmit()` | envía como si se pulsara el botón (lanza `submit` y la validación HTML) |
-| `form.submit()` | envía **sin** lanzar el evento `submit` (evítalo) |
+**¿Por qué `submit` y no `click` en el botón?** Porque `submit` salta también cuando el usuario pulsa **Enter**. Con `click` en el botón, Enter no haría nada.
 
 ---
 
-## 3. Leer con `FormData`
+## 3. Leer el formulario con `FormData`
 
-**Qué es:** `FormData` es un objeto que el navegador rellena con **todos los campos del formulario** a la vez, usando su atributo `name` como clave.
+**El problema:** el formulario tiene cuatro campos. Buscarlos uno a uno con `querySelector` es pesado.
 
-**Para qué sirve:** leer el formulario entero de una vez, sin seleccionar los campos uno a uno. Recuerda: **todo lo que sale de aquí es texto**.
+**Qué es:** `FormData` es un objeto que el navegador rellena con **todos los campos** del formulario, usando su `name` como clave.
+
+**El ejemplo:**
 
 ```ts
-type ProductField = 'name' | 'price' | 'category' | 'stock';
-type FormValues = Record<ProductField, string>;   // TODO texto: es la verdad de la frontera
+const data = new FormData(form);
+console.log(data.get('name'));   // "Lucía"
+console.log(data.get('age'));    // "17"      ← texto
+console.log(data.get('level'));  // "advanced"
+console.log(data.get('rules'));  // "on" si está marcado, null si no
+```
 
-// FormData.get devuelve FormDataEntryValue | null  (= string | File | null)
+`data.get(...)` puede devolver tres cosas: un **texto**, un **archivo** (`File`, si el campo es de subir ficheros) o **`null`** (si no existe ese campo). Para trabajar cómodos, hacemos una pequeña función que siempre devuelva texto:
+
+```ts
 function text(data: FormData, field: string): string {
   const value = data.get(field);
-  return typeof value === 'string' ? value : '';
+  return typeof value === 'string' ? value : '';   // si no es texto, cadena vacía
+}
+```
+
+Y con ella leemos el formulario entero en un objeto. Todo es texto, y eso es **honesto**: es lo que llega de verdad.
+
+```ts
+interface SignupForm {
+  name: string;
+  age: string;      // texto, aunque sea una edad
+  level: string;
+  rules: boolean;   // la casilla: marcada o no
 }
 
-function readForm(form: HTMLFormElement): FormValues {
+function readSignup(form: HTMLFormElement): SignupForm {
   const data = new FormData(form);
   return {
     name: text(data, 'name'),
-    price: text(data, 'price'),
-    category: text(data, 'category'),
-    stock: text(data, 'stock'),
+    age: text(data, 'age'),
+    level: text(data, 'level'),
+    rules: data.get('rules') !== null,   // un checkbox desmarcado NO aparece en FormData
   };
 }
 ```
 
-> [!TIP]
-> **Consejo:** `Record<ProductField, string>` obliga a leer **exactamente** los cuatro campos. Si añades uno a `ProductField`, TypeScript te avisará en `readForm`.
-
-### Casos especiales
-
-```ts
-const f = new FormData();
-const favorite = f.get('favorite') !== null;   // un checkbox DESMARCADO no aparece en FormData
-const tags = f.getAll('etiqueta');        // varios campos con el mismo name
-const todo = Object.fromEntries(f);            // { nombre: ..., precio: ... } (valores string | File)
-console.log(favorite, tags, todo);
-```
-
-### Ficha técnica (para consultar)
-
-**Ficha técnica · `FormData`**
-
-| Miembro | Firma | Devuelve | Ojo |
-|---|---|---|---|
-| constructor | `new FormData(form?)` | los campos con `name` y su valor actual | los campos `disabled` y los checkbox **desmarcados** no se incluyen |
-| `get` | `data.get(name)` | <code>FormDataEntryValue &#124; null</code> = <code>string &#124; File &#124; null</code> | `null` si no existe |
-| `getAll` | `data.getAll(name)` | `FormDataEntryValue[]` | para varios campos con el mismo `name` |
-| `has` | `data.has(name)` | `boolean` | |
-| `set` / `append` / `delete` | `data.set(name, value)` | `undefined` | `set` sustituye; `append` añade otro valor |
-| `entries` | `data.entries()` | iterador de `[name, value]` | `Object.fromEntries(data)` lo convierte en objeto |
+> **Ojo con los checkbox:** si la casilla está desmarcada, `FormData` ni la incluye. Por eso se pregunta «¿existe?» (`!== null`).
 
 ---
 
 ## 4. Convertir no es validar
 
+Son dos pasos distintos, y se hacen en este orden:
+
 ```
- TEXTO del formulario ──1. CONVERTIR──▶ número ──2. VALIDAR──▶ ¿tiene sentido? ──3. USAR
-   "49,90"                Number(...)     49.9      > 0, finito          NuevoProducto
+ TEXTO  ──1. CONVERTIR──▶  número  ──2. VALIDAR──▶  ¿tiene sentido?  ──▶  USAR
+ "17"       Number(...)       17         entre 8 y 99       sí
 ```
 
-- **Convertir** es cambiar el tipo: `Number('49.9')`.
-- **Validar** es comprobar que el valor tiene sentido **para el negocio**: un precio negativo es un número válido para JavaScript, pero no para una tienda.
+- **Convertir** es cambiar el tipo: de `"17"` a `17`.
+- **Validar** es comprobar que el valor **tiene sentido para tu aplicación**. `-4` es un número perfecto para JavaScript, pero no es una edad.
 
-### Las trampas de la conversión
+Tres ejemplos distintos para verlo:
 
-| Expresión | Resultado | ¿Problema? |
+| Dato | Convertir | Validar |
 |---|---|---|
-| `Number('42')` | `42` | Sí |
-| `Number('')` | **`0`** | **Atención:** un campo vacío se convierte en 0 |
-| `Number('   ')` | **`0`** | **Atención:** |
-| `Number('49,90')` | `NaN` | **Atención:** la coma decimal española |
-| `Number('12abc')` | `NaN` | |
-| `parseInt('12abc')` | **`12`** | **Atención:** acepta basura al final |
+| Edad `"17"` | `Number("17")` → `17` | ¿es entero y está entre 8 y 99? |
+| Temperatura `"21,5"` | `Number("21,5".replace(',', '.'))` → `21.5` | ¿está entre −50 y 60? |
+| Fecha de reserva `"2026-11-03"` | `new Date("2026-11-03")` | ¿es hoy o más adelante? |
 
-> [!IMPORTANT]
-> **Clave:** Usa `Number` (no `parseInt`), comprueba **el vacío aparte** y valida con `Number.isFinite` o `Number.isInteger`.
+### Las trampas de convertir
 
-**Pruébalo tú: cada línea con su resultado real.**
+`Number` es la herramienta, pero tiene sorpresas. Pruébalas en la consola:
 
 ```ts
-console.log(Number(''));                      // 0      ¡un campo vacío parece un cero!
-console.log(Number('   '));                   // 0      espacios: también cero
-console.log(Number('49,90'));                 // NaN    la coma decimal no se entiende
-console.log(Number('12abc'));                 // NaN    bien: no acepta basura
-console.log(Number.parseInt('12abc', 10));    // 12     mal: acepta basura al final
-console.log(Number.isNaN(Number('abc')));     // true   así se detecta un número no válido
+console.log(Number('17'));        // 17
+console.log(Number(''));          // 0    ← ¡un campo VACÍO parece un cero!
+console.log(Number('   '));       // 0    ← espacios: también cero
+console.log(Number('21,5'));      // NaN  ← no entiende la coma española
+console.log(Number('17 años'));   // NaN  ← bien: no acepta basura
+console.log(parseInt('17 años')); // 17   ← mal: parseInt se come la basura
 ```
+
+`NaN` significa *Not a Number*: «esto no es un número». Se detecta con `Number.isNaN(x)`, o mejor con `Number.isFinite(x)`, que también descarta `Infinity`.
+
+> [!IMPORTANT]
+> **Regla práctica:**
+> 1. Comprueba primero si el campo está **vacío** (`texto.trim() === ''`).
+> 2. Convierte con **`Number`**, no con `parseInt`.
+> 3. Comprueba con **`Number.isFinite`** (cualquier número) o **`Number.isInteger`** (sin decimales).
 
 ---
 
 ## 5. Validar en el dominio
 
-La validación es una **regla de negocio**: va en `domain/`, sin DOM. Devuelve una **unión discriminada** con el valor bueno o los errores **de todos los campos**:
+**El problema:** si metemos todas las comprobaciones dentro del `submit`, mezclamos la página con las reglas. Las reglas del torneo («mínimo 8 años») no dependen de la página: valen igual para una app de móvil.
+
+**Qué hacemos:** una función de **dominio** (sin DOM, sin `document`) que recibe el texto del formulario y devuelve una de dos cosas:
+
+- **todo bien**, con los datos ya convertidos;
+- **algo mal**, con un mensaje por cada campo que falla.
 
 ```ts
-type NewProduct = Omit<Product, 'id'>;
-type ProductField = 'name' | 'price' | 'category' | 'stock';
-type FormValues = Record<ProductField, string>;
-type FormErrors = Partial<Record<ProductField, string>>;
+type Level = 'beginner' | 'intermediate' | 'advanced';
 
-type ValidationResult =
-  | { ok: true; value: NewProduct }
-  | { ok: false; errors: FormErrors };
-
-const CATEGORIES: readonly Category[] = ['peripherals', 'monitors', 'audio'];
-const isCategory = (v: unknown): v is Category => typeof v === 'string' && CATEGORIES.some((c) => c === v);
-
-function validateNewProduct(data: FormValues): ValidationResult {
-  const errors: FormErrors = {};
-
-  const name = data.name.trim();
-  if (name.length < 3) errors.name = 'Mínimo 3 caracteres';
-
-  const price = Number(data.price.replace(',', '.'));      // 1. convertir (admite coma)
-  if (data.price.trim() === '' || !Number.isFinite(price) || price <= 0) {
-    errors.price = 'Precio mayor que 0';                     // 2. validar
-  }
-
-  const stock = Number(data.stock);
-  if (data.stock.trim() === '' || !Number.isInteger(stock) || stock < 0) {
-    errors.stock = 'Número entero, 0 o más';
-  }
-
-  const category = data.category;
-  if (!isCategory(category)) errors.category = 'Elige una categoría';
-
-  if (Object.keys(errors).length > 0 || !isCategory(category)) {
-    return { ok: false, errors };
-  }
-  return { ok: true, value: { name, price: Math.round(price * 100) / 100, category, stock } };
+interface Player {           // el dato BUENO: ya con sus tipos de verdad
+  name: string;
+  age: number;
+  level: Level;
 }
 
-console.log(validateNewProduct({ name: 'ab', price: '-3', category: '', stock: '2.5' }));
-console.log(validateNewProduct({ name: 'Webcam de Isaías', price: '49,90', category: 'peripherals', stock: '4' }));
+type SignupErrors = Partial<Record<'name' | 'age' | 'level' | 'rules', string>>;
+
+type SignupResult =
+  | { ok: true; player: Player }
+  | { ok: false; errors: SignupErrors };
 ```
 
-- Se **acumulan** todos los errores: el usuario ve de una vez todo lo que debe corregir.
-- `replace(',', '.')`: el usuario escribe `49,90`. Pensar en el usuario también es validar.
-- ¿Por qué se repite `!isCategory(category)` al final? Porque TypeScript **no relaciona** «`errors` está vacío» con «la categoría es válida». La comprobación directa **estrecha** el tipo y permite construir el producto sin `as`.
+`SignupErrors` se lee: «un objeto que **puede** tener un mensaje para `name`, para `age`, para `level` o para `rules`». `Partial` hace que todas sean opcionales: solo aparecen las que fallan.
+
+```ts
+const LEVELS: readonly Level[] = ['beginner', 'intermediate', 'advanced'];
+
+function isLevel(value: string): value is Level {
+  return LEVELS.some((level) => level === value);
+}
+
+function validateSignup(form: SignupForm): SignupResult {
+  const errors: SignupErrors = {};
+
+  const name = form.name.trim();
+  if (name.length < 2) errors.name = 'Escribe tu nombre';
+
+  const age = Number(form.age);                                   // 1. convertir
+  if (form.age.trim() === '' || !Number.isInteger(age) || age < 8 || age > 99) {
+    errors.age = 'Edad entre 8 y 99 años';                         // 2. validar
+  }
+
+  if (!isLevel(form.level)) errors.level = 'Elige tu nivel';
+  if (!form.rules) errors.rules = 'Tienes que aceptar las normas';
+
+  if (Object.keys(errors).length > 0 || !isLevel(form.level)) {
+    return { ok: false, errors };
+  }
+  return { ok: true, player: { name, age, level: form.level } };
+}
+```
+
+**Pruébalo sin navegador**, que es la gran ventaja de tenerlo en el dominio:
+
+```ts
+console.log(validateSignup({ name: 'L', age: '', level: '', rules: false }));
+// { ok: false, errors: { name: 'Escribe tu nombre', age: 'Edad entre 8 y 99 años',
+//                        level: 'Elige tu nivel', rules: 'Tienes que aceptar las normas' } }
+
+console.log(validateSignup({ name: 'Lucía', age: '17', level: 'advanced', rules: true }));
+// { ok: true, player: { name: 'Lucía', age: 17, level: 'advanced' } }
+```
+
+Fíjate en tres decisiones:
+
+- **Se acumulan todos los errores.** El usuario ve de una vez todo lo que tiene que corregir, en vez de ir error a error.
+- **`trim()`** quita espacios de los lados: `"  Lucía "` pasa a `"Lucía"`, y `"   "` pasa a `""`.
+- **¿Por qué se repite `!isLevel(form.level)` al final?** Porque TypeScript no deduce que «`errors` vacío» signifique «el nivel es válido». La comprobación directa le confirma que `form.level` es un `Level`, y así no hace falta ningún `as`.
 
 ---
 
-## 6. Mostrar los errores
+## 6. Enseñar los errores
+
+Ahora la vista: escribir cada mensaje en su `<small data-error-for="...">` y marcar el campo.
 
 ```ts
-const FIELDS: readonly ProductField[] = ['name', 'price', 'category', 'stock'];
-type ProductField = 'name' | 'price' | 'category' | 'stock';
-type FormErrors = Partial<Record<ProductField, string>>;
+const FIELDS = ['name', 'age', 'level', 'rules'] as const;
 
-function showErrors(form: HTMLFormElement, errors: FormErrors): void {
+function showErrors(form: HTMLFormElement, errors: SignupErrors): void {
   for (const field of FIELDS) {
-    const input = form.elements.namedItem(field);          // Element | RadioNodeList | null
+    const message = errors[field] ?? '';                       // sin error → texto vacío
     const output = form.querySelector(`[data-error-for="${field}"]`);
-    const message = errors[field] ?? '';
+    if (output instanceof HTMLElement) output.textContent = message;
+
+    const input = form.elements.namedItem(field);
     if (input instanceof HTMLInputElement || input instanceof HTMLSelectElement) {
       input.setAttribute('aria-invalid', String(message !== ''));
     }
-    if (output instanceof HTMLElement) output.textContent = message;
   }
 }
 ```
 
+`aria-invalid="true"` hace que un lector de pantalla avise de que el campo está mal, y con una línea de CSS se pone en rojo:
+
+```css
+[aria-invalid="true"] { border-color: #dc2626; }
+```
+
+**Todo junto en el `submit`.** Léelo como una receta de cuatro pasos:
+
 ```ts
-// (fragmento) El submit completo
 form.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const result = validateNewProduct(readForm(form));
+  event.preventDefault();                          // 1. que no se recargue
+
+  const result = validateSignup(readSignup(form)); // 2. leer y validar
+
   if (!result.ok) {
-    showErrors(form, result.errors);   // aquí TS sabe que hay "errores"
+    showErrors(form, result.errors);               // 3a. mal: enseñar errores
     return;
   }
-  showErrors(form, {});                     // limpiar mensajes anteriores
-  dispatch({ type: 'create', data: result.value });   // aquí, que hay "valor"
-  form.reset();
+
+  showErrors(form, {});                            // 3b. bien: limpiar errores viejos
+  console.log(`Inscrito: ${result.player.name}`);  // 4. usar el dato bueno
+  form.reset();                                    //    y vaciar el formulario
 });
 ```
 
-> [!NOTE]
-> **Accesibilidad:** `aria-invalid="true"` hace que los lectores de pantalla anuncien el error, y con CSS (`[aria-invalid="true"] { border-color: red }`) se marca en rojo. Accesibilidad sin esfuerzo extra.
+Dentro del `if (!result.ok)`, TypeScript sabe que existe `result.errors`. Después del `return`, sabe que existe `result.player`. Es la **unión discriminada** de la U4 trabajando para ti.
 
 ---
 
-## 7. `localStorage`: guardar en el navegador
+## 7. `localStorage`: que no se pierda al recargar
 
-**El problema:** añades un producto, recargas la página y **ha desaparecido**. Todo lo que está en variables se pierde al recargar.
+**El problema:** la página tiene un botón de modo oscuro. El usuario lo activa, recarga... y vuelve el modo claro. Todo lo que guardas en variables **se pierde al recargar**.
 
-**Para qué sirve:** recordar **entre recargas** el carrito, las preferencias (tema oscuro, idioma) o un borrador a medio escribir. **No** sirve para secretos.
+**Qué es:** `localStorage` es un pequeño almacén del navegador donde guardas **texto** con un nombre (una clave). Sigue ahí aunque recargues o cierres el navegador.
 
-`localStorage` guarda **texto** en el navegador, por dominio, y **sobrevive** a recargar y a cerrar.
+**Para qué sirve:** recordar cosas pequeñas del usuario: el tema, el idioma, una lista de tareas, el borrador de un comentario, la puntuación máxima de un juego.
+
+**El ejemplo, en tres operaciones:**
 
 ```ts
-localStorage.setItem('tema', 'dark');
-const theme = localStorage.getItem('tema');      // string | null (null si no existe)
-localStorage.removeItem('tema');
+localStorage.setItem('theme', 'dark');        // guardar:  clave → valor
 
-// Objetos: a JSON y de JSON
-const cart = [{ productId: 1, quantity: 2 }];
-localStorage.setItem('cart', JSON.stringify(cart));
+const theme = localStorage.getItem('theme');  // leer: "dark", o null si no existe
 console.log(theme);
+
+localStorage.removeItem('theme');             // borrar
 ```
 
-| | `localStorage` | `sessionStorage` |
-|---|---|---|
-| Dura | hasta que se borre | hasta cerrar la pestaña |
-| Uso típico | carrito, preferencias | datos temporales de un proceso |
+Un uso completo: recordar la puntuación máxima de un juego.
 
-> **Puede fallar:** en algunos modos privados o con el almacenamiento lleno, `setItem` lanza un error. Envuélvelo en `try/catch` y que la aplicación siga funcionando sin guardar.
-> **No guardes secretos** (contraseñas, tokens): cualquier script de la página puede leerlo.
-> **¿Y las cookies?** Sirven para que el **servidor** reciba datos (sesiones, autenticación). Para guardar el estado de una aplicación en el navegador se usa `localStorage`. No las usaremos.
+```ts
+function loadBestScore(): number {
+  const saved = localStorage.getItem('best-score');   // string | null
+  if (saved === null) return 0;                       // primera vez: no hay nada
+  const score = Number(saved);                        // ¡es texto! convertir
+  return Number.isInteger(score) && score >= 0 ? score : 0;   // y validar
+}
 
-### Ficha técnica (para consultar)
+function saveBestScore(score: number): void {
+  localStorage.setItem('best-score', String(score));  // guardar como texto
+}
+```
 
-**Ficha técnica · `localStorage` / `sessionStorage` (`Storage`)**
+Fíjate: **es la misma historia que el formulario**. Lo que lees de `localStorage` es texto y puede ser cualquier cosa (el usuario puede cambiarlo desde las herramientas del navegador). Convertir y validar.
 
-| Miembro | Firma | Devuelve | Ojo |
-|---|---|---|---|
-| `setItem` | `localStorage.setItem(key, value)` | `undefined` | solo guarda **texto**; puede lanzar `QuotaExceededError` (lleno, unos 5 MB por origen) |
-| `getItem` | `localStorage.getItem(key)` | <code>string &#124; null</code> | `null` si la clave no existe |
-| `removeItem` | `localStorage.removeItem(key)` | `undefined` | |
-| `clear` | `localStorage.clear()` | `undefined` | borra **todo** lo de ese origen |
-| `key` / `length` | `localStorage.key(i)` | nombre de la clave en la posición `i` | |
+> **Puedes verlo:** en Chrome, F12 → pestaña *Application* → *Local Storage*. Ahí están tus claves, y se pueden editar a mano.
 
-Es **síncrono** y compartido por todas las pestañas del mismo origen (protocolo + dominio + puerto).
+**Tres avisos:**
 
-**Ficha técnica · `JSON`**
-
-| Método | Firma | Devuelve | Ojo |
-|---|---|---|---|
-| `JSON.stringify` | `JSON.stringify(value, replacer?, space?)` | `string` (o `undefined` si `value` es `undefined` o una función) | omite propiedades `undefined` y funciones; `Map` y `Set` → `{}`; `Date` → texto ISO; `NaN`/`Infinity` → `null`. `space` (p. ej. `2`) indenta |
-| `JSON.parse` | `JSON.parse(text, reviver?)` | `any` → guárdalo como `unknown` | texto inválido → lanza `SyntaxError` |
+- **No guardes secretos** (contraseñas, tokens): cualquier script de la página puede leerlos.
+- **Puede fallar:** en algunos modos privados, o si está lleno (unos 5 MB), `setItem` lanza un error. Lo veremos en el apartado 9.
+- **`sessionStorage`** funciona igual, pero se borra al cerrar la pestaña.
 
 ---
 
-## 8. Cargar con desconfianza
+## 8. Guardar listas y objetos: JSON
 
-`JSON.parse` devuelve **`any`**: si escribes `const data: Product[] = JSON.parse(text)`, compila aunque sea basura. El usuario puede editar `localStorage` en las herramientas del navegador, o los datos pueden venir de una versión antigua de tu aplicación.
+**El problema:** `localStorage` solo guarda texto. Pero queremos guardar una **lista de tareas**, que es un array de objetos.
 
 ```ts
-interface CartLine { productId: number; quantity: number }
-const STORAGE_KEY = 'techstore-isaias-v1';   // versión en la clave: si cambia el formato, se cambia la clave
-
-function isCartLine(raw: unknown): raw is CartLine {
-  if (typeof raw !== 'object' || raw === null) return false;
-  if (!('productId' in raw) || !('quantity' in raw)) return false;
-  return typeof raw.productId === 'number' && typeof raw.quantity === 'number' && raw.quantity > 0;
+interface Task {
+  title: string;
+  done: boolean;
 }
 
-function saveCart(cart: readonly CartLine[]): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
-  } catch {
-    console.warn('No se pudo guardar: la aplicación sigue funcionando');
-  }
+const tasks: Task[] = [
+  { title: 'Estudiar la U6', done: false },
+  { title: 'Sacar al perro', done: true },
+];
+
+localStorage.setItem('tasks', String(tasks));
+console.log(localStorage.getItem('tasks'));   // "[object Object],[object Object]"  ← ¡inservible!
+```
+
+**Qué es JSON:** una forma estándar de escribir datos como texto. `JSON.stringify` convierte un valor en texto, y `JSON.parse` hace el camino de vuelta.
+
+```ts
+const textVersion = JSON.stringify(tasks);
+console.log(textVersion);
+// '[{"title":"Estudiar la U6","done":false},{"title":"Sacar al perro","done":true}]'
+
+localStorage.setItem('tasks', textVersion);             // guardar: objeto → texto
+
+const back = JSON.parse(localStorage.getItem('tasks') ?? '[]');   // leer: texto → objeto
+console.log(back[0].title);                             // "Estudiar la U6"
+```
+
+> [!IMPORTANT]
+> **Regla:** `JSON.stringify` al **guardar**, `JSON.parse` al **leer**.
+> **Ojo:** un `Map` o un `Set` se guardan como `{}` vacío. Conviértelos antes a array (`[...miSet]`).
+
+---
+
+## 9. Cargar con desconfianza
+
+**El problema:** `JSON.parse` devuelve `any`. Si escribes:
+
+```ts
+const tasks: Task[] = JSON.parse(localStorage.getItem('tasks') ?? '[]');
+```
+
+TypeScript te deja, **aunque dentro haya cualquier cosa**: el usuario lo editó, o lo guardó una versión antigua de tu app con otros campos. Y la app se rompe más tarde, en otro sitio, sin saber por qué.
+
+**La solución** tiene tres partes, y ya las conoces todas:
+
+1. Guardar el resultado de `JSON.parse` como **`unknown`** («no sé qué es, compruébalo»).
+2. Comprobarlo con un **type guard** (U4).
+3. Envolverlo en **`try/catch`** por si el texto ni siquiera es JSON.
+
+```ts
+function isTask(value: unknown): value is Task {
+  return (
+    typeof value === 'object' && value !== null &&
+    'title' in value && typeof value.title === 'string' &&
+    'done' in value && typeof value.done === 'boolean'
+  );
 }
 
-function loadCart(): CartLine[] {
+const STORAGE_KEY = 'tasks-v1';   // la versión en la clave: si cambia el formato, cambia la clave
+
+function loadTasks(): Task[] {
   try {
     const text = localStorage.getItem(STORAGE_KEY);
-    if (text === null) return [];                      // primera visita
-    const raw: unknown = JSON.parse(text);            // ← unknown, NO any
-    return Array.isArray(raw) && raw.every(isCartLine) ? raw : [];
+    if (text === null) return [];                 // primera visita
+    const raw: unknown = JSON.parse(text);        // unknown, NO any
+    return Array.isArray(raw) && raw.every(isTask) ? raw : [];
   } catch {
-    return [];                                          // texto corrupto o almacenamiento bloqueado
+    return [];                                    // texto roto o almacén bloqueado
+  }
+}
+
+function saveTasks(tasks: readonly Task[]): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  } catch {
+    console.warn('No se ha podido guardar; la app sigue funcionando');
   }
 }
 ```
 
-- `raw.every(isCartLine)` usa el *type guard* como predicado: si devuelve `true`, `raw` es `CartLine[]`.
-- Si algo no cuadra, se devuelve un valor seguro (`[]`) en vez de romper la aplicación.
-- **Solo este fichero** (`services/storage.ts`) sabe que existe `localStorage`. Si mañana guardas en un servidor, cambias este fichero y nada más.
+Léelo así: «si no hay nada, lista vacía; si hay algo y **todas** las piezas son tareas, úsalo; si no, lista vacía». Nunca se rompe la aplicación.
+
+> **Dónde va este código:** en `services/storage.ts`. Es el **único** archivo que sabe que existe `localStorage`. Si mañana las tareas se guardan en un servidor, cambias este archivo y ningún otro. Son las capas de la U4.
 
 ---
 
-## 9. Autoevaluación
+## 10. Fichas técnicas
+
+*Para consultar cuando lo necesites, no para aprender de memoria.*
+
+**`HTMLFormElement`**
+
+| Miembro | Qué hace |
+|---|---|
+| evento `submit` | salta al pulsar un botón `type="submit"` o Enter en un campo |
+| `event.preventDefault()` | evita que la página se recargue |
+| `form.elements.namedItem(name)` | el campo con ese `name` (<code>Element &#124; RadioNodeList &#124; null</code>) |
+| `form.reset()` | vacía los campos (los deja como estaban al cargar) |
+| `form.requestSubmit()` | envía como si se pulsara el botón (salta `submit`) |
+
+**`FormData`**
+
+| Miembro | Devuelve | Ojo |
+|---|---|---|
+| `new FormData(form)` | los campos con `name` | los `disabled` y los checkbox desmarcados **no** aparecen |
+| `data.get(name)` | <code>string &#124; File &#124; null</code> | `null` si no existe |
+| `data.getAll(name)` | array de valores | varios campos con el mismo `name` |
+| `data.has(name)` | `boolean` | |
+| `Object.fromEntries(data)` | objeto con todos los campos | |
+
+**Conversión de texto a número**
+
+| Expresión | Resultado |
+|---|---|
+| `Number('42')` | `42` |
+| `Number('')` / `Number('  ')` | `0` (¡cuidado!) |
+| `Number('4,5')` | `NaN` |
+| `parseInt('12abc')` | `12` (acepta basura) |
+| `Number.isFinite(x)` | `true` si es un número real (no `NaN` ni `Infinity`) |
+| `Number.isInteger(x)` | `true` si no tiene decimales |
+
+**`localStorage` / `sessionStorage`**
+
+| Miembro | Devuelve | Ojo |
+|---|---|---|
+| `setItem(key, value)` | nada | solo texto; puede lanzar error si está lleno |
+| `getItem(key)` | <code>string &#124; null</code> | `null` si no existe |
+| `removeItem(key)` | nada | |
+| `clear()` | nada | borra **todo** lo de esa web |
+
+**`JSON`**
+
+| Método | Devuelve | Ojo |
+|---|---|---|
+| `JSON.stringify(value)` | `string` | `Map`/`Set` → `{}`; `Date` → texto; funciones y `undefined` desaparecen |
+| `JSON.parse(text)` | `any` → guárdalo como `unknown` | si el texto no es JSON, lanza `SyntaxError` |
+
+---
+
+## 11. Autoevaluación
 
 - [ ] ¿Qué pasa si olvidas `event.preventDefault()` en un `submit`?
-- [ ] ¿Qué tipo devuelve `new FormData(form).get('price')`?
-- [ ] ¿Qué devuelve `Number('')`? ¿Y `parseInt('12abc')`? ¿Por qué son peligrosos?
-- [ ] ¿Por qué la validación va en el dominio y no en el evento `submit`?
-- [ ] ¿Qué tipo devuelve `JSON.parse` y cómo lo tratamos?
-- [ ] ¿Por qué la clave de `localStorage` lleva `v1`?
+- [ ] ¿Por qué escuchamos `submit` en el formulario y no `click` en el botón?
+- [ ] El usuario escribe `17` en la edad. ¿Qué tipo tiene lo que lees con `FormData`?
+- [ ] ¿Qué devuelve `Number('')`? ¿Por qué es peligroso?
+- [ ] Explica con un ejemplo la diferencia entre convertir y validar.
 - [ ] ¿Cómo sabes si un checkbox estaba marcado usando `FormData`?
+- [ ] ¿Por qué la validación va en el dominio y no dentro del `submit`?
+- [ ] ¿Qué pasa si guardas un array en `localStorage` sin `JSON.stringify`?
+- [ ] ¿Por qué guardamos el resultado de `JSON.parse` como `unknown`?
+- [ ] ¿Por qué la clave de `localStorage` lleva `v1`?

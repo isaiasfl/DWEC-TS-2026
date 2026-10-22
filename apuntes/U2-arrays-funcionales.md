@@ -40,7 +40,7 @@ export interface Product {
   stock: number;
 }
 
-// src/data/products.ts
+// src/services/products.ts
 export const products: Product[] = [
   { id: 1, name: 'Teclado mecánico', price: 80, category: 'peripherals', stock: 5 },
   { id: 2, name: 'Ratón inalámbrico', price: 25, category: 'peripherals', stock: 0 },

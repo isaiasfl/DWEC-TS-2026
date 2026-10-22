@@ -2,7 +2,7 @@
 
 *Apuntes de **Isaías FL** · DWEC 2.º DAW*
 
-> **Para el alumnado:** entrega para el **viernes 6/11**. 45 minutos.
+> **Para el alumnado:** ejercicios para **practicar en casa** antes de la siguiente clase (unos 45 minutos). No se entregan, pero algún día te puede tocar **explicar tu solución** en clase.
 > Carpeta `src/exercises/s13-homework/`. Se puede ejecutar con `npx tsx` (sin navegador).
 
 ## Enunciados

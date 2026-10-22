@@ -2,7 +2,7 @@
 
 *Apuntes de **Isaías FL** · DWEC 2.º DAW*
 
-> **Para el alumnado:** entrega para el **martes 10/11** (primer día de React). 45 minutos.
+> **Para el alumnado:** ejercicios para **practicar en casa** antes de la siguiente clase (unos 45 minutos). No se entregan, pero algún día te puede tocar **explicar tu solución** en clase.
 > Sobre el proyecto de clase. Cada componente: `interface XProps` + `function X(props: XProps): HTMLElement`. Prohibido que un componente use el `store` directamente (solo `App`).
 
 ## Enunciados

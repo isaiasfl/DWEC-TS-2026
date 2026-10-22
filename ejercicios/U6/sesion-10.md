@@ -1,9 +1,9 @@
-# Ejercicios · Sesión 09 · Viernes 23 de octubre
+# Ejercicios · Sesión 10 · Martes 27 de octubre
 
 *Apuntes de **Isaías FL** · DWEC 2.º DAW*
 
-> **Para el alumnado:** entrega para el **miércoles 28/10**. 60 minutos.
-> Continúa tu **agenda** de la sesión 08 (estado → render con reductor). Commit con `lazygit`: `s09: form y persistencia`.
+> **Para el alumnado:** ejercicios para **practicar en casa** antes de la siguiente clase (unos 60 minutos). No se entregan, pero algún día te puede tocar **explicar tu solución** en clase.
+> Continúa tu **agenda** de la sesión 09 (estado → render con reductor). Commit con `lazygit`: `s10: form y persistencia`.
 
 ## Enunciados
 

@@ -112,7 +112,7 @@ La estructura que usaremos durante todo el curso:
 src/
 ├── main.ts              ← punto de entrada: importa y ejecuta
 ├── types/               ← interface / type
-├── data/               ← datos de ejemplo
+├── services/               ← datos de ejemplo
 └── exercises/
     └── s01/ex01-prices-with-vat/index.ts   ← un ejercicio = una carpeta con export
 ```
